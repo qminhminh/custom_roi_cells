@@ -1,19 +1,19 @@
-# Hướng dẫn Publish Package lên pub.dev
+# Guide to Publish Package to pub.dev
 
-## Bước 1: Chuẩn bị
+## Step 1: Preparation
 
-1. Đảm bảo đã cài đặt Flutter SDK
-2. Đăng nhập vào pub.dev bằng tài khoản Google
-3. Kiểm tra tất cả các file cần thiết:
-   - `pubspec.yaml` - đã cập nhật mô tả và version
-   - `README.md` - đã có hướng dẫn đầy đủ
-   - `CHANGELOG.md` - đã có changelog
-   - `LICENSE` - đã có license (MIT)
-   - `example/` - đã có example app
+1. Ensure Flutter SDK is installed
+2. Log in to pub.dev with Google account
+3. Check all required files:
+   - `pubspec.yaml` - updated description and version
+   - `README.md` - has complete documentation
+   - `CHANGELOG.md` - has changelog
+   - `LICENSE` - has license (MIT)
+   - `example/` - has example app
 
-## Bước 2: Kiểm tra code
+## Step 2: Code Check
 
-Chạy các lệnh sau để kiểm tra:
+Run the following commands to check:
 
 ```bash
 # Format code
@@ -22,71 +22,70 @@ flutter format .
 # Analyze code
 flutter analyze
 
-# Chạy tests
+# Run tests
 flutter test
 
-# Chạy example app
+# Run example app
 cd example
 flutter run
 ```
 
-## Bước 3: Cập nhật thông tin trong pubspec.yaml
+## Step 3: Update Information in pubspec.yaml
 
-Đảm bảo các thông tin sau đã đúng:
-- `name`: Tên package (phải là unique trên pub.dev)
-- `description`: Mô tả ngắn gọn (tối đa 60 ký tự)
-- `version`: Version hiện tại
-- `homepage`: URL GitHub repository
-- `repository`: URL GitHub repository
-- `issue_tracker`: URL GitHub issues
+Ensure the following information is correct:
+- `name`: Package name (must be unique on pub.dev)
+- `description`: Brief description (maximum 60 characters)
+- `version`: Current version
+- `homepage`: GitHub repository URL
+- `repository`: GitHub repository URL
+- `issue_tracker`: GitHub issues URL
 
-**Lưu ý:** Cập nhật các URL GitHub trong `pubspec.yaml` với repository thực tế của bạn.
+**Note:** Update GitHub URLs in `pubspec.yaml` with your actual repository.
 
-## Bước 4: Tạo tài khoản pub.dev
+## Step 4: Create pub.dev Account
 
-1. Truy cập https://pub.dev
-2. Đăng nhập bằng tài khoản Google
-3. Vào phần "Publisher" để tạo publisher (nếu chưa có)
+1. Visit https://pub.dev
+2. Log in with Google account
+3. Go to "Publisher" section to create publisher (if not already created)
 
-## Bước 5: Publish package
+## Step 5: Publish Package
 
 ```bash
-# Kiểm tra package trước khi publish
+# Check package before publishing
 flutter pub publish --dry-run
 
 # Publish package
 flutter pub publish
 ```
 
-## Bước 6: Sau khi publish
+## Step 6: After Publishing
 
-1. Kiểm tra package trên pub.dev
-2. Cập nhật README nếu cần
-3. Tạo tags trên GitHub:
+1. Check package on pub.dev
+2. Update README if needed
+3. Create tags on GitHub:
    ```bash
-   git tag v0.1.0
-   git push origin v0.1.0
+   git tag v0.2.0
+   git push origin v0.2.0
    ```
 
-## Lưu ý quan trọng
+## Important Notes
 
-- **Version**: Mỗi lần publish phải tăng version
-- **Changelog**: Luôn cập nhật CHANGELOG.md khi có thay đổi
-- **Tests**: Đảm bảo tất cả tests đều pass
-- **Documentation**: Đảm bảo README.md đầy đủ và rõ ràng
-- **License**: Phải có license file
+- **Version**: Must increment version for each publish
+- **Changelog**: Always update CHANGELOG.md when there are changes
+- **Tests**: Ensure all tests pass
+- **Documentation**: Ensure README.md is complete and clear
+- **License**: Must have license file
 
-## Cập nhật package sau khi publish
+## Update Package After Publishing
 
-1. Cập nhật version trong `pubspec.yaml`
-2. Cập nhật `CHANGELOG.md`
-3. Commit và push code
-4. Chạy `flutter pub publish`
-5. Tạo tag mới trên GitHub
+1. Update version in `pubspec.yaml`
+2. Update `CHANGELOG.md`
+3. Commit and push code
+4. Run `flutter pub publish`
+5. Create new tag on GitHub
 
 ## Troubleshooting
 
-- **Lỗi "Package already exists"**: Tên package đã được sử dụng, cần đổi tên
-- **Lỗi "Invalid version"**: Version không đúng format (phải là x.y.z)
-- **Lỗi "Missing files"**: Thiếu file cần thiết (README, LICENSE, etc.)
-
+- **Error "Package already exists"**: Package name is already in use, need to change name
+- **Error "Invalid version"**: Version format is incorrect (must be x.y.z)
+- **Error "Missing files"**: Missing required files (README, LICENSE, etc.)

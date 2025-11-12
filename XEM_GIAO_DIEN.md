@@ -1,118 +1,118 @@
-# 👀 XEM GIAO DIỆN VÀ KIỂM TRA CHỨC NĂNG
+# 👀 VIEW INTERFACE AND TEST FUNCTIONALITY
 
-## 🎯 MỤC TIÊU
-Xem giao diện app và test tất cả chức năng đã code
-
----
-
-## 📋 CHECKLIST CHỨC NĂNG
-
-### 1. ✅ Giao diện cơ bản
-- [ ] App mở được
-- [ ] Header hiển thị đúng
-- [ ] Grid cells hiển thị 15x15
-- [ ] Nút Save, Delete, Clear hiển thị
-
-### 2. ✅ Chức năng Selection
-- [ ] Tap vào cell → Cell chuyển màu đỏ
-- [ ] Tap lại → Cell bỏ chọn (trở về trắng)
-- [ ] Drag từ cell này sang cell khác → Chọn range
-- [ ] Drag theo đường chéo → Chọn hình chữ nhật
-
-### 3. ✅ Hiển thị kết quả
-- [ ] Chọn cells → Hiển thị số lượng
-- [ ] Chọn cells → Hiển thị danh sách index
-- [ ] Chọn cells → Hiển thị mảng JSON: `[0,1,2,3,...]`
-
-### 4. ✅ Nút điều khiển
-- [ ] Nhấn Save → Lưu selection và hiển thị mảng
-- [ ] Nhấn Delete → Xóa cells đã chọn
-- [ ] Nhấn Clear → Xóa tất cả selection
+## 🎯 OBJECTIVE
+View app interface and test all coded functionality
 
 ---
 
-## 🎨 MÔ TẢ GIAO DIỆN
+## 📋 FUNCTIONALITY CHECKLIST
 
-### Màu sắc:
-- **Header**: Màu xanh nhạt (#E3F2FD)
-- **Grid background**: Màu trắng
-- **Cells chưa chọn**: Màu trắng
-- **Cells đã chọn**: Màu đỏ (70% opacity)
-- **Border cells**: Màu xanh nhạt (#90CAF9)
-- **Nút Save**: Màu xanh (#2196F3)
-- **Nút Delete**: Màu đen (#424242)
-- **Nút Clear**: Màu xám (#9E9E9E)
+### 1. ✅ Basic Interface
+- [ ] App opens
+- [ ] Header displays correctly
+- [ ] Grid cells display 15x15
+- [ ] Save, Delete, Clear buttons display
 
-### Kích thước:
+### 2. ✅ Selection Functionality
+- [ ] Tap on cell → Cell turns red
+- [ ] Tap again → Cell deselects (returns to white)
+- [ ] Drag from one cell to another → Select range
+- [ ] Drag diagonally → Select rectangle
+
+### 3. ✅ Result Display
+- [ ] Select cells → Display count
+- [ ] Select cells → Display index list
+- [ ] Select cells → Display JSON array: `[0,1,2,3,...]`
+
+### 4. ✅ Control Buttons
+- [ ] Press Save → Save selection and display array
+- [ ] Press Delete → Delete selected cells
+- [ ] Press Clear → Clear all selection
+
+---
+
+## 🎨 INTERFACE DESCRIPTION
+
+### Colors:
+- **Header**: Light blue (#E3F2FD)
+- **Grid background**: White
+- **Unselected cells**: White
+- **Selected cells**: Red (70% opacity)
+- **Cell borders**: Light blue (#90CAF9)
+- **Save button**: Blue (#2196F3)
+- **Delete button**: Black (#424242)
+- **Clear button**: Gray (#9E9E9E)
+
+### Sizes:
 - **Grid**: 600px x 400px
-- **Cells**: ~40px x ~27px (tự động tính)
+- **Cells**: ~40px x ~27px (auto-calculated)
 - **Border**: 0.5px
 
 ---
 
 ## 🧪 TEST CASES
 
-### Test 1: Chọn một cell
+### Test 1: Select one cell
 ```
-1. Tap vào cell ở vị trí (0,0) - index 0
-2. Kỳ vọng: Cell chuyển màu đỏ
-3. Kiểm tra: selectedIndices = [0]
-```
-
-### Test 2: Chọn nhiều cells riêng lẻ
-```
-1. Tap vào cell 0
-2. Tap vào cell 5
-3. Tap vào cell 10
-4. Kỳ vọng: 3 cells đỏ
-5. Kiểm tra: selectedIndices = [0, 5, 10]
+1. Tap on cell at position (0,0) - index 0
+2. Expected: Cell turns red
+3. Check: selectedIndices = [0]
 ```
 
-### Test 3: Drag để chọn range
+### Test 2: Select multiple individual cells
 ```
-1. Nhấn và giữ cell 20
-2. Kéo đến cell 25
-3. Kỳ vọng: Cells 20-25 đều đỏ
-4. Kiểm tra: selectedIndices = [20, 21, 22, 23, 24, 25]
+1. Tap on cell 0
+2. Tap on cell 5
+3. Tap on cell 10
+4. Expected: 3 red cells
+5. Check: selectedIndices = [0, 5, 10]
 ```
 
-### Test 4: Chọn hình chữ nhật
+### Test 3: Drag to select range
 ```
-1. Nhấn và giữ cell 30 (hàng 2, cột 0)
-2. Kéo đến cell 45 (hàng 3, cột 0)
-3. Kỳ vọng: Chọn cả hàng 2 và hàng 3
-4. Kiểm tra: selectedIndices chứa cells từ 30-44
+1. Press and hold cell 20
+2. Drag to cell 25
+3. Expected: Cells 20-25 all red
+4. Check: selectedIndices = [20, 21, 22, 23, 24, 25]
+```
+
+### Test 4: Select rectangle
+```
+1. Press and hold cell 30 (row 2, column 0)
+2. Drag to cell 45 (row 3, column 0)
+3. Expected: Select both row 2 and row 3
+4. Check: selectedIndices contains cells from 30-44
 ```
 
 ### Test 5: Save selection
 ```
-1. Chọn một số cells
-2. Nhấn nút Save
-3. Kỳ vọng: Hiển thị SnackBar "✅ Đã lưu X cells"
-4. Kiểm tra: Mảng index hiển thị đúng
+1. Select some cells
+2. Press Save button
+3. Expected: Display SnackBar "✅ Saved X cells"
+4. Check: Index array displays correctly
 ```
 
 ### Test 6: Delete selection
 ```
-1. Chọn một số cells
-2. Nhấn nút Delete
-3. Kỳ vọng: Cells được bỏ chọn, hiển thị SnackBar
-4. Kiểm tra: selectedIndices = []
+1. Select some cells
+2. Press Delete button
+3. Expected: Cells deselect, display SnackBar
+4. Check: selectedIndices = []
 ```
 
 ### Test 7: Clear selection
 ```
-1. Chọn nhiều cells
-2. Nhấn nút Clear
-3. Kỳ vọng: Tất cả cells bỏ chọn
-4. Kiểm tra: selectedIndices = []
+1. Select multiple cells
+2. Press Clear button
+3. Expected: All cells deselect
+4. Check: selectedIndices = []
 ```
 
 ---
 
-## 📸 SCREENSHOTS MÔ TẢ
+## 📸 SCREENSHOT DESCRIPTION
 
-### Màn hình chính:
+### Main screen:
 ```
 ┌──────────────────────────────────────┐
 │  Custom ROI Camera Cells        [×]  │
@@ -120,10 +120,10 @@ Xem giao diện app và test tất cả chức năng đã code
 │                                      │
 │  ┌────────────────────────────────┐ │
 │  │ 📱 Custom ROI Camera Cells     │ │
-│  │ • Tap để chọn/bỏ chọn một cell│ │
-│  │ • Drag để chọn nhiều cells     │ │
-│  │ • Cells được chọn sẽ hiển thị  │ │
-│  │   màu đỏ                       │ │
+│  │ • Tap to select/deselect a cell│ │
+│  │ • Drag to select multiple cells│ │
+│  │ • Selected cells will display  │ │
+│  │   in red                       │ │
 │  └────────────────────────────────┘ │
 │                                      │
 │  Grid Cells (15x15):                │
@@ -133,33 +133,33 @@ Xem giao diện app và test tất cả chức năng đã code
 │  │ ⬜🔴🔴🔴⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ │   │
 │  │ ⬜🔴🔴🔴⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ │   │
 │  │ ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ │   │
-│  │ ... (15 hàng x 15 cột)        │   │
+│  │ ... (15 rows x 15 columns)      │   │
 │  └──────────────────────────────┘   │
 │                                      │
 │  [Save]  [Delete]  [Clear]          │
 │                                      │
-│  ✅ Đã chọn 9 cells:                │
-│  Danh sách: 16, 17, 18, 31, 32, ... │
-│  Mảng: [16,17,18,31,32,33,46,47,48] │
+│  ✅ Selected 9 cells:                │
+│  List: 16, 17, 18, 31, 32, ...      │
+│  Array: [16,17,18,31,32,33,46,47,48]│
 │                                      │
 └──────────────────────────────────────┘
 ```
 
-### Khi chọn cells:
-- Cells được chọn: Màu đỏ (🔴)
-- Cells chưa chọn: Màu trắng (⬜)
-- Border: Màu xanh nhạt
+### When selecting cells:
+- Selected cells: Red (🔴)
+- Unselected cells: White (⬜)
+- Border: Light blue
 
 ---
 
-## 🚀 CÁCH CHẠY NHANH
+## 🚀 QUICK RUN METHOD
 
-### Option 1: Android Studio (Khuyên dùng)
-1. Mở Android Studio
+### Option 1: Android Studio (Recommended)
+1. Open Android Studio
 2. File → Open → `example`
-3. Nhấn Run (▶)
+3. Press Run (▶)
 
-### Option 2: Script tự động
+### Option 2: Automatic Script
 ```bash
 # Windows
 cd example
@@ -180,34 +180,33 @@ flutter run
 
 ---
 
-## ✅ KẾT QUẢ MONG ĐỢI
+## ✅ EXPECTED RESULTS
 
-Sau khi chạy app, bạn sẽ thấy:
+After running the app, you will see:
 
-1. ✅ Giao diện đẹp, hiện đại
-2. ✅ Grid cells 15x15 rõ ràng
-3. ✅ Tap và drag hoạt động mượt mà
-4. ✅ Cells được chọn hiển thị màu đỏ
-5. ✅ Nút điều khiển hoạt động đúng
-6. ✅ Mảng index hiển thị chính xác
+1. ✅ Beautiful, modern interface
+2. ✅ Clear 15x15 grid cells
+3. ✅ Smooth tap and drag operation
+4. ✅ Selected cells display in red
+5. ✅ Control buttons work correctly
+6. ✅ Index array displays accurately
 
 ---
 
 ## 🐛 TROUBLESHOOTING
 
-### App không chạy được
-→ Mở Android Studio và chạy từ đó
+### App won't run
+→ Open Android Studio and run from there
 
-### Không thấy device
-→ Tạo emulator trong Android Studio
+### No device found
+→ Create emulator in Android Studio
 
 ### Build failed
-→ Chạy `flutter clean` và `flutter pub get`
+→ Run `flutter clean` and `flutter pub get`
 
-### Cells không chọn được
-→ Kiểm tra `enableSelection: true` trong code
+### Cells can't be selected
+→ Check `enableSelection: true` in code
 
 ---
 
-**Chúc bạn test thành công! 🎉**
-
+**Good luck with testing! 🎉**

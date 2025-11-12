@@ -1,39 +1,39 @@
 # custom_roi_camera_cells
 
-Flutter package để tạo grid cells với khả năng tùy chỉnh kích thước màn hình và số lượng cells. Hữu ích cho việc tạo ROI (Region of Interest) trong camera applications.
+Flutter package for creating grid cells with customizable screen size and number of cells. Useful for creating ROI (Region of Interest) in camera applications.
 
-## Tính năng
+## Features
 
-- ✅ Tùy chỉnh kích thước màn hình (chiều rộng và chiều cao)
-- ✅ Tùy chỉnh số lượng cells (số hàng và số cột)
-- ✅ **Chọn cells bằng tap và drag** - Tap để chọn/bỏ chọn, drag để chọn nhiều cells
-- ✅ **Highlight cells được chọn** - Cells được chọn sẽ được highlight với màu đỏ
-- ✅ **Lưu selection dưới dạng mảng index** - Ví dụ: [0,1,2,3,...]
-- ✅ Widget với form input để nhập thông số
-- ✅ Controller để quản lý trạng thái
-- ✅ Callback khi cell được chọn
-- ✅ Tùy chỉnh màu sắc, border, và hiển thị số thứ tự cell
-- ✅ Nút điều khiển: Save, Delete, Clear selection
-- ✅ Responsive và dễ sử dụng
+- ✅ Customizable screen size (width and height)
+- ✅ Customizable number of cells (rows and columns)
+- ✅ **Select cells by tap and drag** - Tap to select/deselect, drag to select multiple cells
+- ✅ **Highlight selected cells** - Selected cells will be highlighted in red
+- ✅ **Save selection as index array** - Example: [0,1,2,3,...]
+- ✅ Widget with form input to enter parameters
+- ✅ Controller to manage state
+- ✅ Callback when cell is selected
+- ✅ Customizable colors, border, and cell number display
+- ✅ Control buttons: Save, Delete, Clear selection
+- ✅ Responsive and easy to use
 
-## Cài đặt
+## Installation
 
-Thêm vào file `pubspec.yaml`:
+Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  custom_roi_camera_cells: ^0.1.0
+  custom_roi_camera_cells: ^0.2.0
 ```
 
-Sau đó chạy:
+Then run:
 
 ```bash
 flutter pub get
 ```
 
-## Sử dụng
+## Usage
 
-### Cách 1: Sử dụng với Controller
+### Method 1: Using with Controller
 
 ```dart
 import 'package:custom_roi_camera_cells/custom_roi_camera_cells.dart';
@@ -44,7 +44,7 @@ class MyWidget extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<MyWidget> {
-  // Khởi tạo controller với tham số tùy chỉnh
+  // Initialize controller with custom parameters
   final CellsController controller = CellsController(
     screenWidth: 2048.0,
     screenHeight: 500.0,
@@ -66,7 +66,7 @@ class _MyWidgetState extends State<MyWidget> {
       borderWidth: 1.0,
       cellColor: Colors.grey.withOpacity(0.1),
       onCellTap: (row, column) {
-        print('Cell được chọn: Row $row, Column $column');
+        print('Cell selected: Row $row, Column $column');
       },
     );
   }
@@ -74,7 +74,7 @@ class _MyWidgetState extends State<MyWidget> {
 ```
 
 
-### Cách 2: Sử dụng trực tiếp với tham số
+### Method 2: Using directly with parameters
 
 ```dart
 CellsWidget(
@@ -86,12 +86,12 @@ CellsWidget(
   borderWidth: 0.5,
   showCellNumbers: true,
   onCellTap: (row, column) {
-    print('Cell tại row $row, column $column');
+    print('Cell at row $row, column $column');
   },
 )
 ```
 
-### Cách 3: Sử dụng với Selection (Tap và Drag để chọn cells)
+### Method 3: Using with Selection (Tap and Drag to select cells)
 
 ```dart
 final CellsController controller = CellsController(
@@ -105,32 +105,32 @@ List<int> selectedIndices = [];
 
 CellsWidget(
   controller: controller,
-  enableSelection: true, // Bật chức năng selection
+  enableSelection: true, // Enable selection feature
   selectedCellColor: Colors.red.withOpacity(0.6),
-  showCellNumbers: true, // Hiển thị index của cells
+  showCellNumbers: true, // Display cell indices
   onSelectionChanged: (indices) {
     selectedIndices = indices;
-    print('Đã chọn: $indices');
+    print('Selected: $indices');
   },
 )
 
-// Nút điều khiển selection
+// Selection control buttons
 CellsSelectionButtons(
   controller: controller,
   onSave: (indices) {
-    print('Đã lưu: $indices');
-    // indices là mảng [0,1,2,3,...]
+    print('Saved: $indices');
+    // indices is an array [0,1,2,3,...]
   },
   onDelete: (indices) {
-    print('Đã xóa: $indices');
+    print('Deleted: $indices');
   },
   onClear: () {
-    print('Đã xóa tất cả selection');
+    print('Cleared all selection');
   },
 )
 ```
 
-### Cách 4: Sử dụng Widget với Form Input
+### Method 4: Using Widget with Form Input
 
 ```dart
 CellsInputWidget(
@@ -147,109 +147,109 @@ CellsInputWidget(
 
 ### CellsWidget
 
-Widget chính để hiển thị grid cells.
+Main widget to display grid cells.
 
-**Tham số:**
+**Parameters:**
 
-- `controller` (CellsController?): Controller để quản lý trạng thái
-- `screenWidth` (double?): Chiều rộng màn hình
-- `screenHeight` (double?): Chiều cao màn hình
-- `cellsRows` (int?): Số hàng cells
-- `cellsColumns` (int?): Số cột cells
-- `borderColor` (Color?): Màu border (mặc định: Colors.grey)
-- `borderWidth` (double?): Độ dày border (mặc định: 1.0)
-- `cellColor` (Color?): Màu nền cells (mặc định: Colors.transparent)
-- `onCellTap` (void Function(int row, int column)?): Callback khi cell được chọn
-- `showCellNumbers` (bool): Hiển thị số thứ tự cell (mặc định: false)
-- `numberColor` (Color?): Màu chữ số thứ tự
-- `numberFontSize` (double?): Kích thước chữ số thứ tự
-- `enableSelection` (bool): Cho phép chọn cells bằng tap và drag (mặc định: false)
-- `selectedCellColor` (Color?): Màu của cells được chọn (mặc định: Colors.red.withOpacity(0.5))
-- `onSelectionChanged` (void Function(List<int> selectedIndices)?): Callback khi selection thay đổi, trả về danh sách index
-- `onSaveSelection` (void Function(List<int> selectedIndices)?): Callback khi save selection
+- `controller` (CellsController?): Controller to manage state
+- `screenWidth` (double?): Screen width
+- `screenHeight` (double?): Screen height
+- `cellsRows` (int?): Number of cell rows
+- `cellsColumns` (int?): Number of cell columns
+- `borderColor` (Color?): Border color (default: Colors.grey)
+- `borderWidth` (double?): Border width (default: 1.0)
+- `cellColor` (Color?): Cell background color (default: Colors.transparent)
+- `onCellTap` (void Function(int row, int column)?): Callback when cell is tapped
+- `showCellNumbers` (bool): Show cell numbers (default: false)
+- `numberColor` (Color?): Number text color
+- `numberFontSize` (double?): Number font size
+- `enableSelection` (bool): Enable cell selection by tap and drag (default: false)
+- `selectedCellColor` (Color?): Selected cell color (default: Colors.red.withOpacity(0.5))
+- `onSelectionChanged` (void Function(List<int> selectedIndices)?): Callback when selection changes, returns list of indices
+- `onSaveSelection` (void Function(List<int> selectedIndices)?): Callback when saving selection
 
 ### CellsSelectionButtons
 
-Widget hiển thị các nút điều khiển selection (Save, Delete, Clear).
+Widget displaying selection control buttons (Save, Delete, Clear).
 
-**Tham số:**
+**Parameters:**
 
-- `controller` (CellsController): Controller để quản lý (bắt buộc)
-- `onSave` (void Function(List<int> selectedIndices)?): Callback khi nhấn nút Save
-- `onDelete` (void Function(List<int> selectedIndices)?): Callback khi nhấn nút Delete
-- `onClear` (VoidCallback?): Callback khi nhấn nút Clear
-- `saveButtonColor` (Color?): Màu nền nút Save (mặc định: Colors.blue)
-- `deleteButtonColor` (Color?): Màu nền nút Delete (mặc định: Colors.black87)
-- `clearButtonColor` (Color?): Màu nền nút Clear (mặc định: Colors.grey)
-- `showSelectionCount` (bool): Hiển thị số lượng cells được chọn (mặc định: true)
+- `controller` (CellsController): Controller to manage (required)
+- `onSave` (void Function(List<int> selectedIndices)?): Callback when Save button is pressed
+- `onDelete` (void Function(List<int> selectedIndices)?): Callback when Delete button is pressed
+- `onClear` (VoidCallback?): Callback when Clear button is pressed
+- `saveButtonColor` (Color?): Save button background color (default: Colors.blue)
+- `deleteButtonColor` (Color?): Delete button background color (default: Colors.black87)
+- `clearButtonColor` (Color?): Clear button background color (default: Colors.grey)
+- `showSelectionCount` (bool): Show number of selected cells (default: true)
 
 ### CellsInputWidget
 
-Widget với form input để nhập thông số và hiển thị preview.
+Widget with form input to enter parameters and display preview.
 
-**Tham số:**
+**Parameters:**
 
-- `controller` (CellsController?): Controller để quản lý
-- `onChanged` (void Function(double width, double height, int rows, int columns)?): Callback khi giá trị thay đổi
-- `showCellsPreview` (bool): Hiển thị preview cells (mặc định: true)
+- `controller` (CellsController?): Controller to manage
+- `onChanged` (void Function(double width, double height, int rows, int columns)?): Callback when values change
+- `showCellsPreview` (bool): Show cells preview (default: true)
 
 ### CellsController
 
-Controller để quản lý trạng thái của cells.
+Controller to manage cells state.
 
 **Constructor:**
 
 ```dart
 CellsController({
-  required double screenWidth,    // Bắt buộc, phải > 0
-  required double screenHeight,   // Bắt buộc, phải > 0
-  required int cellsRows,         // Bắt buộc, phải > 0
-  required int cellsColumns,      // Bắt buộc, phải > 0
+  required double screenWidth,    // Required, must be > 0
+  required double screenHeight,   // Required, must be > 0
+  required int cellsRows,         // Required, must be > 0
+  required int cellsColumns,      // Required, must be > 0
 })
 ```
 
-**Lưu ý:** Tất cả các tham số đều bắt buộc và phải lớn hơn 0. Nếu truyền giá trị <= 0, sẽ ném `ArgumentError`.
+**Note:** All parameters are required and must be greater than 0. If a value <= 0 is passed, an `ArgumentError` will be thrown.
 
-**Thuộc tính:**
+**Properties:**
 
-- `screenWidth` (double): Chiều rộng màn hình
-- `screenHeight` (double): Chiều cao màn hình
-- `cellsRows` (int): Số hàng cells
-- `cellsColumns` (int): Số cột cells
-- `cellWidth` (double): Kích thước chiều rộng mỗi cell (read-only)
-- `cellHeight` (double): Kích thước chiều cao mỗi cell (read-only)
-- `totalCells` (int): Tổng số cells (read-only)
-- `selectedCellIndices` (Set<int>): Danh sách index các cells được chọn (read-only)
-- `selectedCellsCount` (int): Số lượng cells được chọn (read-only)
+- `screenWidth` (double): Screen width
+- `screenHeight` (double): Screen height
+- `cellsRows` (int): Number of cell rows
+- `cellsColumns` (int): Number of cell columns
+- `cellWidth` (double): Width of each cell (read-only)
+- `cellHeight` (double): Height of each cell (read-only)
+- `totalCells` (int): Total number of cells (read-only)
+- `selectedCellIndices` (Set<int>): List of selected cell indices (read-only)
+- `selectedCellsCount` (int): Number of selected cells (read-only)
 
-**Phương thức:**
+**Methods:**
 
-- `isCellSelected(int index)`: Kiểm tra cell có được chọn không
-- `selectCell(int index)`: Chọn một cell theo index
-- `deselectCell(int index)`: Bỏ chọn một cell theo index
-- `selectCells(List<int> indices)`: Chọn nhiều cells theo danh sách index
-- `selectCellRange(int startIndex, int endIndex)`: Chọn một range cells
-- `selectRow(int row)`: Chọn toàn bộ một hàng
-- `selectColumn(int column)`: Chọn toàn bộ một cột
-- `clearSelection()`: Xóa tất cả selection
-- `deleteSelectedCells()`: Xóa các cells được chọn
-- `getSelectedIndices()`: Lấy danh sách index đã chọn dưới dạng mảng đã sắp xếp
-- `addListener(void Function() listener)`: Đăng ký listener
-- `removeListener(void Function() listener)`: Hủy đăng ký listener
-- `dispose()`: Giải phóng tài nguyên
+- `isCellSelected(int index)`: Check if a cell is selected
+- `selectCell(int index)`: Select a cell by index
+- `deselectCell(int index)`: Deselect a cell by index
+- `selectCells(List<int> indices)`: Select multiple cells by index list
+- `selectCellRange(int startIndex, int endIndex)`: Select a range of cells
+- `selectRow(int row)`: Select an entire row
+- `selectColumn(int column)`: Select an entire column
+- `clearSelection()`: Clear all selection
+- `deleteSelectedCells()`: Delete selected cells
+- `getSelectedIndices()`: Get list of selected indices as sorted array
+- `addListener(void Function() listener)`: Register listener
+- `removeListener(void Function() listener)`: Unregister listener
+- `dispose()`: Dispose resources
 
-## Ví dụ
+## Examples
 
-Xem thêm ví dụ chi tiết trong thư mục `example/`.
+See more detailed examples in the `example/` directory.
 
-## Đóng góp
+## Contributing
 
-Đóng góp và đề xuất đều được chào đón! Vui lòng tạo issue hoặc pull request trên GitHub.
+Contributions and suggestions are welcome! Please create an issue or pull request on GitHub.
 
 ## License
 
-MIT License - xem file [LICENSE](LICENSE) để biết thêm chi tiết.
+MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Tác giả
+## Author
 
-Được tạo bởi [Tên của bạn]
+Created by [Your Name]

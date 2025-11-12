@@ -1,38 +1,38 @@
-# 🚀 Hướng dẫn chạy Example App
+# 🚀 Guide to Run Example App
 
-## Cách 1: Chạy trong Android Studio (Khuyên dùng - Dễ nhất) ⭐
+## Method 1: Run in Android Studio (Recommended - Easiest) ⭐
 
-### Bước 1: Mở project
-1. Mở **Android Studio**
-2. Chọn **File → Open**
-3. Chọn thư mục **`example`** trong project này
-   - Đường dẫn: `custom_roi_camera_cells/example`
+### Step 1: Open project
+1. Open **Android Studio**
+2. Select **File → Open**
+3. Select the **`example`** folder in this project
+   - Path: `custom_roi_camera_cells/example`
 
-### Bước 2: Chờ Android Studio sync
-- Android Studio sẽ tự động sync dependencies
-- Đợi cho đến khi sync xong (thường mất 1-2 phút)
+### Step 2: Wait for Android Studio to sync
+- Android Studio will automatically sync dependencies
+- Wait until sync completes (usually takes 1-2 minutes)
 
-### Bước 3: Chọn device
-- Chọn device/emulator từ dropdown ở trên cùng
-- Hoặc kết nối điện thoại Android và bật USB Debugging
-- Hoặc tạo một Android Emulator mới
+### Step 3: Select device
+- Select device/emulator from dropdown at the top
+- Or connect Android phone and enable USB Debugging
+- Or create a new Android Emulator
 
-### Bước 4: Chạy app
-- Nhấn nút **Run** (▶) màu xanh ở trên cùng
-- Hoặc nhấn **Shift + F10**
-- App sẽ được build và chạy tự động
+### Step 4: Run app
+- Press the **Run** button (▶) in green at the top
+- Or press **Shift + F10**
+- App will be built and run automatically
 
-### Bước 5: Xem giao diện
-- App sẽ hiển thị grid cells 15x15
-- **Tap** vào các cells để chọn (màu đỏ)
-- **Drag** để chọn nhiều cells
-- Sử dụng nút **Save**, **Delete**, **Clear** để quản lý
+### Step 5: View interface
+- App will display 15x15 grid cells
+- **Tap** on cells to select (red color)
+- **Drag** to select multiple cells
+- Use **Save**, **Delete**, **Clear** buttons to manage
 
 ---
 
-## Cách 2: Chạy từ Terminal (Nếu đã cài Flutter)
+## Method 2: Run from Terminal (If Flutter is installed)
 
-### Windows (PowerShell hoặc CMD):
+### Windows (PowerShell or CMD):
 ```powershell
 cd example
 flutter pub get
@@ -48,7 +48,7 @@ flutter run
 
 ---
 
-## Cách 3: Chạy trên Web (Nếu hỗ trợ)
+## Method 3: Run on Web (If supported)
 
 ```bash
 cd example
@@ -57,53 +57,52 @@ flutter run -d chrome
 
 ---
 
-## 📱 Giao diện sẽ hiển thị:
+## 📱 Interface will display:
 
-1. **Header**: Hướng dẫn sử dụng
-2. **Grid Cells**: Lưới 15x15 cells với khả năng selection
-3. **Nút điều khiển**: Save, Delete, Clear
-4. **Kết quả**: Hiển thị danh sách index đã chọn dưới dạng mảng `[0,1,2,3,...]`
+1. **Header**: Usage instructions
+2. **Grid Cells**: 15x15 grid with selection capability
+3. **Control buttons**: Save, Delete, Clear
+4. **Result**: Display selected index list as array `[0,1,2,3,...]`
 
-## ✨ Tính năng:
+## ✨ Features:
 
-- ✅ Tap để chọn/bỏ chọn một cell
-- ✅ Drag để chọn nhiều cells
-- ✅ Cells được chọn hiển thị màu đỏ
-- ✅ Lưu selection dưới dạng mảng index
-- ✅ Xóa selection
-- ✅ Hiển thị kết quả dưới dạng JSON array
+- ✅ Tap to select/deselect a cell
+- ✅ Drag to select multiple cells
+- ✅ Selected cells display in red
+- ✅ Save selection as index array
+- ✅ Delete selection
+- ✅ Display result as JSON array
 
-## 🔧 Yêu cầu:
+## 🔧 Requirements:
 
-- Android Studio (hoặc VS Code với Flutter extension)
-- Flutter SDK đã được cài đặt
-- Android Emulator hoặc thiết bị Android thật
-- Đã kết nối device/emulator
+- Android Studio (or VS Code with Flutter extension)
+- Flutter SDK installed
+- Android Emulator or real Android device
+- Device/emulator connected
 
-## ❓ Gặp vấn đề?
+## ❓ Troubleshooting?
 
-1. **Lỗi "Flutter not found"**:
-   - Đảm bảo đã cài Flutter SDK
-   - Thêm Flutter vào PATH
+1. **Error "Flutter not found"**:
+   - Ensure Flutter SDK is installed
+   - Add Flutter to PATH
 
-2. **Lỗi "No devices found"**:
-   - Khởi động Android Emulator
-   - Hoặc kết nối điện thoại và bật USB Debugging
+2. **Error "No devices found"**:
+   - Start Android Emulator
+   - Or connect phone and enable USB Debugging
 
-3. **Lỗi build**:
-   - Chạy `flutter clean`
-   - Chạy `flutter pub get` lại
-   - Xóa thư mục `.dart_tool` và `build`
+3. **Build error**:
+   - Run `flutter clean`
+   - Run `flutter pub get` again
+   - Delete `.dart_tool` and `build` folders
 
 ---
 
-## 📸 Ảnh chụp màn hình:
+## 📸 Screenshots:
 
-Sau khi chạy app, bạn sẽ thấy:
-- Grid cells với border màu xanh
-- Cells được chọn sẽ có màu đỏ
-- Nút Save, Delete, Clear ở dưới
-- Hiển thị mảng index đã chọn
+After running the app, you will see:
+- Grid cells with blue border
+- Selected cells will be red
+- Save, Delete, Clear buttons at bottom
+- Display selected index array
 
-**Chúc bạn thành công! 🎉**
-
+**Good luck! 🎉**
