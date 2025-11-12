@@ -1,3 +1,22 @@
+## 0.3.4
+
+* **Custom Column/Row Sizes (NEW!):**
+  * Added `CellsSizeController` to manage custom sizes for columns and rows
+  * Added `CellsSizeInputWidget` for users to input custom column widths and row heights
+  * Support custom width for each column independently
+  * Support custom height for each row independently
+  * Auto-switch from GridView to Table widget when custom sizes are enabled
+  * Display default and actual sizes for each column/row
+  * Reset individual or all sizes to default
+  * Seamless integration with `CellsDataWidget` and `CellsTableWidget`
+  * Horizontal and vertical scrolling support for large tables with custom sizes
+* **Text Display Improvements:**
+  * Fixed text being cut off in cells
+  * Auto-scale text to fit cell size using FittedBox
+  * Tooltip to show full text when hovering
+  * Auto-adjust font size based on cell size
+  * Better text overflow handling
+
 ## 0.3.0
 
 * **Excel-like Features (NEW!):**
