@@ -6,7 +6,7 @@
 1. Open **Android Studio**
 2. Select **File → Open**
 3. Select the **`example`** folder in this project
-   - Path: `custom_roi_camera_cells/example`
+   - Path: `custom_roi_cells/example`
 
 ### Step 2: Wait for Android Studio to sync
 - Android Studio will automatically sync dependencies

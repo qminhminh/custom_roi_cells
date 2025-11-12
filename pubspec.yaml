@@ -1,6 +1,6 @@
-name: custom_roi_camera_cells
-description: "Flutter package tạo grid cells tùy chỉnh kích thước màn hình và số lượng cells cho ROI camera applications."
-version: 0.2.0
+name: custom_roi_cells
+description: "Flutter package for creating grid cells with customizable screen size and number of cells for ROI camera applications."
+version: 0.2.2
 homepage: https://github.com/qminhminh/custom_roi_cells.git
 repository: https://github.com/qminhminh/custom_roi_cells.git
 issue_tracker: https://github.com/qminhminh/custom_roi_cells.git/issues

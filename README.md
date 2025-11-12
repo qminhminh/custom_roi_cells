@@ -1,4 +1,4 @@
-# custom_roi_camera_cells
+# custom_roi_cells
 
 Flutter package for creating grid cells with customizable screen size and number of cells. Useful for creating ROI (Region of Interest) in camera applications.
 
@@ -16,13 +16,82 @@ Flutter package for creating grid cells with customizable screen size and number
 - ✅ Control buttons: Save, Delete, Clear selection
 - ✅ Responsive and easy to use
 
+## Demo
+
+### Screenshots
+
+#### Main Interface
+![Main Interface](docs/images/demo-main.png)
+
+*Grid cells with selection capability*
+
+#### Selection Functionality
+![Selection](docs/images/demo-selection.png)
+
+*Tap and drag to select multiple cells*
+
+#### Control Buttons
+![Control Buttons](docs/images/demo-buttons.png)
+
+*Save, Delete, and Clear buttons*
+
+#### Selection Result
+![Selection Result](docs/images/demo-result.png)
+
+*Display selected indices as array*
+
+### Video Demo
+
+<!-- Add your demo video here -->
+<!-- Option 1: Using GitHub's video support -->
+<!--
+https://user-images.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/docs/images/demo-video.mp4
+-->
+
+<!-- Option 2: Using YouTube or other video hosting -->
+<!--
+[![Demo Video](docs/images/demo-thumbnail.png)](https://youtube.com/watch?v=YOUR_VIDEO_ID)
+-->
+
+<!-- Option 3: Using GIF for animated demo -->
+![Drag Selection](docs/images/demo-drag-select.gif)
+
+*Drag to select multiple cells*
+
+### How to Add Your Own Demo
+
+1. **Take screenshots** of your app:
+   - Run the example app: `cd example && flutter run`
+   - Take screenshots of the main interface
+   - Take screenshots of selection functionality
+   - Take screenshots of control buttons
+   - Take screenshots of selection results
+
+2. **Create animated GIF** (optional):
+   - Record screen while using the app
+   - Convert to GIF using tools like [LICEcap](https://www.cockos.com/licecap/) or [GIF Brewery](https://gfycat.com/gifbrewery)
+   - Save as `docs/images/demo-drag-select.gif`
+
+3. **Create video** (optional):
+   - Record screen while demonstrating features
+   - Export as MP4
+   - Upload to YouTube or GitHub
+   - Add link to README
+
+4. **Add images to repository**:
+   - Create `docs/images/` directory
+   - Add your images to `docs/images/`
+   - Update paths in README.md
+
+**Note:** Currently, the demo images are placeholders. Replace them with your actual screenshots and videos.
+
 ## Installation
 
 Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  custom_roi_camera_cells: ^0.2.0
+  custom_roi_cells: ^0.2.0
 ```
 
 Then run:
@@ -36,7 +105,7 @@ flutter pub get
 ### Method 1: Using with Controller
 
 ```dart
-import 'package:custom_roi_camera_cells/custom_roi_camera_cells.dart';
+import 'package:custom_roi_cells/custom_roi_cells.dart';
 
 class MyWidget extends StatefulWidget {
   @override

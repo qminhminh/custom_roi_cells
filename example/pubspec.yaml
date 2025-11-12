@@ -1,5 +1,5 @@
-name: custom_roi_camera_cells_example
-description: Example app for custom_roi_camera_cells package
+name: custom_roi_cells_example
+description: Example app for custom_roi_cells package
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  custom_roi_camera_cells:
+  custom_roi_cells:
     path: ../
 
 dev_dependencies:

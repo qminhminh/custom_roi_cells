@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:custom_roi_camera_cells/custom_roi_camera_cells.dart';
+import 'package:custom_roi_cells/custom_roi_cells.dart';
 
 void main() {
   group('CellsController', () {

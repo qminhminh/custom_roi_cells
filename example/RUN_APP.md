@@ -5,7 +5,7 @@
 1. **Open project in Android Studio:**
    - Open Android Studio
    - File → Open → Select `example` folder
-   - Or open `custom_roi_camera_cells` folder and select `example` folder in project
+   - Or open `custom_roi_cells` folder and select `example` folder in project
 
 2. **Run app:**
    - Select device/emulator from device list

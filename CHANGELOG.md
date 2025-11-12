@@ -1,3 +1,20 @@
+## 0.2.2
+
+* **Package Renamed:**
+  * Renamed package from `custom_roi_camera_cells` to `custom_roi_cells`
+  * Updated all imports and references
+  * Updated example app package name to `custom_roi_cells_example`
+* **Documentation Improvements:**
+  * Added demo section to README.md with screenshots and video support
+  * Updated all documentation files to English
+  * Added demo images/videos directory structure
+  * Improved README.md with visual demonstrations
+* **Error Handling:**
+  * Added try-catch blocks throughout the library to prevent crashes
+  * Improved error handling in CellsController
+  * Improved error handling in CellsWidget
+  * Added validation for invalid inputs
+
 ## 0.2.0
 
 * **Added Selection Feature:**
