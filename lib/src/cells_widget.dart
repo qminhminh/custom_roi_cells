@@ -91,6 +91,7 @@ class _CellsWidgetState extends State<CellsWidget> {
   Set<int> _lastProcessedRange =
       {}; // Lưu range đã xử lý để tránh toggle nhiều lần
   final GlobalKey _gridKey = GlobalKey();
+  final Map<int, GlobalKey> _cellKeys = {}; // Map index -> GlobalKey cho mỗi cell
 
   @override
   void initState() {
@@ -199,70 +200,83 @@ class _CellsWidgetState extends State<CellsWidget> {
     }
   }
 
-  int _getCellIndexFromPosition(Offset localPosition) {
+  int? _getCellIndexFromHitTest(Offset globalPosition) {
     try {
-      final cellWidth = _controller.cellWidth;
-      final cellHeight = _controller.cellHeight;
+      // Sử dụng HitTest để tìm widget nào đang được touch
+      final RenderBox? containerBox =
+          _gridKey.currentContext?.findRenderObject() as RenderBox?;
+      if (containerBox == null) return null;
 
-      // Kiểm tra để tránh chia cho 0
-      if (cellWidth <= 0 || cellHeight <= 0) return -1;
-
-      final column = (localPosition.dx / cellWidth).floor();
-      final row = (localPosition.dy / cellHeight).floor();
-      final index = row * _controller.cellsColumns + column;
-
-      // Đảm bảo index trong phạm vi hợp lệ
-      if (index >= 0 && index < _controller.totalCells) {
-        return index;
+      // Kiểm tra xem vị trí có nằm trong Container không
+      final localPosition = containerBox.globalToLocal(globalPosition);
+      if (!containerBox.size.contains(localPosition)) {
+        return null;
       }
-      return -1;
+
+      // Duyệt qua tất cả các cell keys để tìm cell nào chứa vị trí này
+      for (final entry in _cellKeys.entries) {
+        final cellKey = entry.value;
+        final cellIndex = entry.key;
+        final cellContext = cellKey.currentContext;
+        
+        if (cellContext != null) {
+          final cellBox = cellContext.findRenderObject() as RenderBox?;
+          if (cellBox != null) {
+            // Chuyển đổi global position sang local position của cell
+            try {
+              final cellLocalPosition = cellBox.globalToLocal(globalPosition);
+              // Kiểm tra xem vị trí có nằm trong bounds của cell không
+              if (cellBox.size.contains(cellLocalPosition)) {
+                return cellIndex;
+              }
+            } catch (e) {
+              // Ignore error khi convert position
+            }
+          }
+        }
+      }
     } catch (e) {
-      return -1;
+      // Ignore error
     }
+    return null;
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
     try {
       if (widget.enableSelection && _isDragging && _dragStartIndex != null) {
-        final RenderBox? renderBox =
-            _gridKey.currentContext?.findRenderObject() as RenderBox?;
-        if (renderBox != null) {
-          try {
-            final localPosition = renderBox.globalToLocal(
-              details.globalPosition,
-            );
-            final currentIndex = _getCellIndexFromPosition(localPosition);
-            if (currentIndex >= 0 && _dragStartIndex != null) {
-              // Tính toán range từ start đến current
-              final start =
-                  _dragStartIndex! < currentIndex
-                      ? _dragStartIndex!
-                      : currentIndex;
-              final end =
-                  _dragStartIndex! > currentIndex
-                      ? _dragStartIndex!
-                      : currentIndex;
-
-              // Chỉ xử lý các cells chưa được xử lý trong lần drag này
-              for (int i = start; i <= end; i++) {
-                if (!_lastProcessedRange.contains(i)) {
-                  if (_dragSelectMode) {
-                    // Mode chọn: chọn cell nếu chưa chọn
-                    if (!_controller.isCellSelected(i)) {
-                      _controller.selectCell(i);
-                    }
-                  } else {
-                    // Mode bỏ chọn: bỏ chọn cell nếu đã chọn
-                    if (_controller.isCellSelected(i)) {
-                      _controller.deselectCell(i);
-                    }
+        final currentIndex = _getCellIndexFromHitTest(details.globalPosition);
+        if (currentIndex != null && currentIndex >= 0 && _dragStartIndex != null) {
+          // Tính toán range từ start đến current (bao gồm cả hàng và cột)
+          // Chuyển đổi index sang row và column để chọn hình chữ nhật
+          final startRow = _dragStartIndex! ~/ _controller.cellsColumns;
+          final startCol = _dragStartIndex! % _controller.cellsColumns;
+          final currentRow = currentIndex ~/ _controller.cellsColumns;
+          final currentCol = currentIndex % _controller.cellsColumns;
+          
+          final minRow = startRow < currentRow ? startRow : currentRow;
+          final maxRow = startRow > currentRow ? startRow : currentRow;
+          final minCol = startCol < currentCol ? startCol : currentCol;
+          final maxCol = startCol > currentCol ? startCol : currentCol;
+          
+          // Chọn tất cả cells trong hình chữ nhật
+          for (int row = minRow; row <= maxRow; row++) {
+            for (int col = minCol; col <= maxCol; col++) {
+              final i = row * _controller.cellsColumns + col;
+              if (i >= 0 && i < _controller.totalCells && !_lastProcessedRange.contains(i)) {
+                if (_dragSelectMode) {
+                  // Mode chọn: chọn cell nếu chưa chọn
+                  if (!_controller.isCellSelected(i)) {
+                    _controller.selectCell(i);
                   }
-                  _lastProcessedRange.add(i);
+                } else {
+                  // Mode bỏ chọn: bỏ chọn cell nếu đã chọn
+                  if (_controller.isCellSelected(i)) {
+                    _controller.deselectCell(i);
+                  }
                 }
+                _lastProcessedRange.add(i);
               }
             }
-          } catch (e) {
-            // Ignore error khi tính toán position
           }
         }
       }
@@ -296,29 +310,41 @@ class _CellsWidgetState extends State<CellsWidget> {
       final crossAxisCount =
           _controller.cellsColumns > 0 ? _controller.cellsColumns : 1;
 
-      return GestureDetector(
-        onPanStart:
-            widget.enableSelection
-                ? (details) {
-                  try {
-                    final RenderBox? renderBox =
-                        context.findRenderObject() as RenderBox?;
-                    if (renderBox != null) {
-                      final localPosition = renderBox.globalToLocal(
-                        details.globalPosition,
-                      );
-                      final index = _getCellIndexFromPosition(localPosition);
-                      if (index >= 0) {
-                        _onPanStart(details, index);
-                      }
-                    }
-                  } catch (e) {
-                    // Ignore error để tránh crash
+      return Listener(
+        onPointerDown: widget.enableSelection
+            ? (event) {
+                try {
+                  final index = _getCellIndexFromHitTest(event.position);
+                  if (index != null && index >= 0) {
+                    _onPanStart(DragStartDetails(globalPosition: event.position), index);
                   }
+                } catch (e) {
+                  // Ignore error
                 }
-                : null,
-        onPanUpdate: widget.enableSelection ? _onPanUpdate : null,
-        onPanEnd: widget.enableSelection ? _onPanEnd : null,
+              }
+            : null,
+        onPointerMove: widget.enableSelection && _isDragging
+            ? (event) {
+                try {
+                  final index = _getCellIndexFromHitTest(event.position);
+                  if (index != null && index >= 0) {
+                    _onPanUpdate(DragUpdateDetails(globalPosition: event.position));
+                  }
+                } catch (e) {
+                  // Ignore error
+                }
+              }
+            : null,
+        onPointerUp: widget.enableSelection && _isDragging
+            ? (event) {
+                _onPanEnd(DragEndDetails());
+              }
+            : null,
+        onPointerCancel: widget.enableSelection && _isDragging
+            ? (event) {
+                _onPanEnd(DragEndDetails());
+              }
+            : null,
         child: Container(
           key: _gridKey,
           width: _controller.screenWidth > 0 ? _controller.screenWidth : 600.0,
@@ -340,6 +366,12 @@ class _CellsWidgetState extends State<CellsWidget> {
                     itemCount: totalCells,
                     itemBuilder: (context, index) {
                       try {
+                        // Tạo hoặc lấy GlobalKey cho cell này
+                        if (!_cellKeys.containsKey(index)) {
+                          _cellKeys[index] = GlobalKey();
+                        }
+                        final cellKey = _cellKeys[index]!;
+                        
                         final isSelected =
                             widget.enableSelection &&
                             _controller.isCellSelected(index);
@@ -349,6 +381,7 @@ class _CellsWidgetState extends State<CellsWidget> {
                         return GestureDetector(
                           onTap: () => _onCellTap(index),
                           child: Container(
+                            key: cellKey,
                             decoration: BoxDecoration(
                               color: backgroundColor,
                               border: Border.all(

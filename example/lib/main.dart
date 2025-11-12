@@ -31,7 +31,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final CellsController controller = CellsController(
     screenWidth: 600.0,
-    screenHeight: 400.0,
+    screenHeight: 800.0,
     cellsRows: 25,
     cellsColumns: 15,
   );
@@ -120,7 +120,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   borderWidth: 0.5,
                   cellColor: Colors.white,
                   selectedCellColor: Colors.red.withOpacity(0.7),
-                  showCellNumbers: false,
+                  // showCellNumbers: true, // Bật để kiểm tra chính xác
+                  numberFontSize: 8,
                   onSelectionChanged: (indices) {
                     setState(() {
                       selectedIndices = indices;
