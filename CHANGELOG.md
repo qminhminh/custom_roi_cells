@@ -1,3 +1,22 @@
+## 0.3.0
+
+* **Excel-like Features (NEW!):**
+  * Added `CellsDataController` to manage cell data (text, formatting)
+  * Added `CellsDataWidget` for editable cells with text editing
+  * Added `CellsTableWidget` for displaying data as table
+  * Added `CellData` class for cell data and formatting
+  * Support loading data from `List<List<String>>` or `List<Map<String, dynamic>>`
+  * Support cell formatting (text color, background color, font size, font weight, text alignment)
+  * Added search functionality (`CellsSearch`)
+  * Added sort functionality (`CellsSort`)
+  * Added filter functionality (`CellsFilter`)
+  * Added export/import functionality (`CellsExportImport`) - CSV, JSON
+  * Support header rows with custom styling
+* **Improved Drag Selection:**
+  * Fixed drag selection coordinate offset issue using HitTest
+  * Improved cell index calculation from touch position
+  * More accurate selection when widget is wrapped in containers
+
 ## 0.2.2
 
 * **Package Renamed:**

@@ -4,6 +4,7 @@ Flutter package for creating grid cells with customizable screen size and number
 
 ## Features
 
+### Core Features
 - ✅ Customizable screen size (width and height)
 - ✅ Customizable number of cells (rows and columns)
 - ✅ **Select cells by tap and drag** - Tap to select/deselect, drag to select multiple cells
@@ -15,6 +16,18 @@ Flutter package for creating grid cells with customizable screen size and number
 - ✅ Customizable colors, border, and cell number display
 - ✅ Control buttons: Save, Delete, Clear selection
 - ✅ Responsive and easy to use
+
+### Excel-like Features (NEW!)
+- ✅ **Editable cells** - Click to edit text in cells
+- ✅ **Data binding** - Load data from `List<List<String>>` or `List<Map<String, dynamic>>`
+- ✅ **Display data as table** - Show data in table format with headers
+- ✅ **Cell formatting** - Customize text color, background color, font size, font weight, text alignment per cell
+- ✅ **Search functionality** - Search text in cells
+- ✅ **Sort functionality** - Sort data by column(s)
+- ✅ **Filter functionality** - Filter rows by condition
+- ✅ **Export/Import** - Export to CSV, JSON and import from CSV, JSON
+- ✅ **Header rows** - Display header row with custom styling
+- ✅ **Cell data management** - Manage cell data with `CellsDataController`
 
 ## Demo
 
@@ -212,6 +225,137 @@ CellsInputWidget(
 )
 ```
 
+### Method 5: Using as Excel-like Table (NEW!)
+
+#### Display Data from List<List<String>>
+
+```dart
+final CellsController controller = CellsController(
+  screenWidth: 800.0,
+  screenHeight: 600.0,
+  cellsRows: 10,
+  cellsColumns: 5,
+);
+
+final data = [
+  ['Name', 'Age', 'City', 'Email', 'Phone'],
+  ['John', '25', 'New York', 'john@example.com', '123-456-7890'],
+  ['Jane', '30', 'London', 'jane@example.com', '098-765-4321'],
+  ['Bob', '35', 'Paris', 'bob@example.com', '555-123-4567'],
+];
+
+CellsTableWidget(
+  controller: controller,
+  data: data,
+  enableEdit: true, // Allow editing cells
+  showHeader: true, // Show header row
+  headerBackgroundColor: Colors.blue[100],
+  onDataChanged: (newData) {
+    print('Data changed: $newData');
+  },
+)
+```
+
+#### Display Data from List<Map>
+
+```dart
+final mapData = [
+  {'name': 'John', 'age': '25', 'city': 'New York'},
+  {'name': 'Jane', 'age': '30', 'city': 'London'},
+  {'name': 'Bob', 'age': '35', 'city': 'Paris'},
+];
+
+CellsTableWidget(
+  controller: controller,
+  mapData: mapData,
+  columns: ['name', 'age', 'city'], // Column order
+  enableEdit: true,
+  showHeader: true,
+)
+```
+
+#### Using CellsDataController for Advanced Features
+
+```dart
+final CellsController controller = CellsController(
+  screenWidth: 800.0,
+  screenHeight: 600.0,
+  cellsRows: 20,
+  cellsColumns: 10,
+);
+
+final CellsDataController dataController = CellsDataController(controller);
+
+// Load data
+dataController.loadData([
+  ['Header1', 'Header2', 'Header3'],
+  ['Data1', 'Data2', 'Data3'],
+  ['Data4', 'Data5', 'Data6'],
+]);
+
+// Edit cell
+dataController.setCellText(5, 'New Text');
+
+// Get cell text
+final text = dataController.getCellText(5);
+
+// Format cell
+dataController.setCellData(5, CellData(
+  text: 'Formatted Text',
+  backgroundColor: Colors.yellow,
+  textColor: Colors.red,
+  fontWeight: FontWeight.bold,
+  textAlign: TextAlign.center,
+));
+
+// Display with CellsDataWidget
+CellsDataWidget(
+  controller: controller,
+  dataController: dataController,
+  enableEdit: true,
+)
+```
+
+#### Search, Sort, and Filter
+
+```dart
+// Search
+final searchResults = CellsSearch.searchCells(
+  dataController,
+  controller,
+  'search text',
+  caseSensitive: false,
+);
+
+// Sort by column
+CellsSort.sortByColumn(
+  dataController,
+  controller,
+  0, // Column index
+  ascending: true,
+  startRow: 1, // Skip header row
+);
+
+// Filter rows
+final matchingRows = CellsFilter.filterRows(
+  dataController,
+  controller,
+  (rowData) => rowData[0].contains('John'), // Filter condition
+);
+
+// Export to CSV
+final csvString = CellsExportImport.exportToCsv(dataController, controller);
+
+// Export to JSON
+final jsonData = CellsExportImport.exportToJson(dataController, controller);
+
+// Import from CSV
+CellsExportImport.importFromCsv(dataController, controller, csvString);
+
+// Import from JSON
+CellsExportImport.importFromJson(dataController, controller, jsonData);
+```
+
 ## API Reference
 
 ### CellsWidget
@@ -262,6 +406,80 @@ Widget with form input to enter parameters and display preview.
 - `onChanged` (void Function(double width, double height, int rows, int columns)?): Callback when values change
 - `showCellsPreview` (bool): Show cells preview (default: true)
 
+### CellsDataWidget
+
+Widget to display and edit data in cells (Excel-like).
+
+**Parameters:**
+
+- `controller` (CellsController): Controller to manage grid (required)
+- `dataController` (CellsDataController?): Data controller to manage cell data
+- `enableEdit` (bool): Allow editing cells (default: false)
+- `showHeader` (bool): Show header row (default: false)
+- `headerBackgroundColor` (Color?): Header background color
+- `headerTextStyle` (TextStyle?): Header text style
+- `borderColor` (Color?): Cell border color
+- `borderWidth` (double?): Cell border width
+- `defaultCellColor` (Color?): Default cell background color
+- `editingCellBorderColor` (Color?): Border color when editing
+- `onCellTextChanged` (void Function(int index, String text)?): Callback when cell text changes
+- `onCellTap` (void Function(int index)?): Callback when cell is tapped
+
+### CellsTableWidget
+
+Widget to display data as a table (Excel-like) with support for `List<List<String>>` or `List<Map>`.
+
+**Parameters:**
+
+- `controller` (CellsController): Controller to manage grid (required)
+- `dataController` (CellsDataController?): Data controller to manage cell data
+- `data` (List<List<String>>?): Data as rows and columns
+- `mapData` (List<Map<String, dynamic>>?): Data as list of maps
+- `columns` (List<String>?): Column names (when using mapData)
+- `enableEdit` (bool): Allow editing cells (default: false)
+- `showHeader` (bool): Show header row (default: true)
+- `headerBackgroundColor` (Color?): Header background color
+- `headerTextStyle` (TextStyle?): Header text style
+- `borderColor` (Color?): Cell border color
+- `borderWidth` (double?): Cell border width
+- `defaultCellColor` (Color?): Default cell background color
+- `onDataChanged` (void Function(List<List<String>> data)?): Callback when data changes
+
+### CellsDataController
+
+Controller to manage cell data (text, formatting, etc.).
+
+**Properties:**
+
+- `getCellText(int index)`: Get cell text by index
+- `setCellText(int index, String text)`: Set cell text by index
+- `getCellData(int index)`: Get CellData by index
+- `setCellData(int index, CellData cellData)`: Set CellData by index
+- `loadData(List<List<String>> data)`: Load data from List<List<String>>
+- `loadDataFromMaps(List<Map<String, dynamic>> data, {List<String>? columns})`: Load data from List<Map>
+- `exportData()`: Export data as List<List<String>>
+- `exportToJson()`: Export data as JSON
+- `exportToCsv()`: Export data as CSV string
+- `importFromJson(Map<String, dynamic> json)`: Import data from JSON
+- `clearData()`: Clear all data
+- `clearCell(int index)`: Clear cell data
+
+### CellData
+
+Class to store cell data and formatting.
+
+**Properties:**
+
+- `text` (String): Cell text
+- `backgroundColor` (Color?): Background color
+- `textColor` (Color?): Text color
+- `fontSize` (double?): Font size
+- `fontWeight` (FontWeight?): Font weight
+- `textAlign` (TextAlign?): Text alignment
+- `isMerged` (bool): Is cell merged
+- `rowSpan` (int): Row span if merged
+- `colSpan` (int): Column span if merged
+
 ### CellsController
 
 Controller to manage cells state.
@@ -306,6 +524,43 @@ CellsController({
 - `addListener(void Function() listener)`: Register listener
 - `removeListener(void Function() listener)`: Unregister listener
 - `dispose()`: Dispose resources
+
+### CellsSearch
+
+Utility class for searching text in cells.
+
+**Methods:**
+
+- `searchCells(CellsDataController, CellsController, String searchText, {bool caseSensitive, bool matchWholeWord})`: Search for text in cells, returns list of matching cell indices
+- `replaceAll(CellsDataController, CellsController, String searchText, String replaceText, {bool caseSensitive})`: Replace all occurrences of search text, returns count of replacements
+
+### CellsSort
+
+Utility class for sorting data in cells.
+
+**Methods:**
+
+- `sortByColumn(CellsDataController, CellsController, int columnIndex, {bool ascending, int startRow})`: Sort data by column
+- `sortByMultipleColumns(CellsDataController, CellsController, List<int> columnIndexes, {List<bool>? ascending, int startRow})`: Sort data by multiple columns
+
+### CellsFilter
+
+Utility class for filtering data in cells.
+
+**Methods:**
+
+- `filterRows(CellsDataController, CellsController, bool Function(List<String> rowData) filterFunction)`: Filter rows by condition, returns list of matching row indices
+
+### CellsExportImport
+
+Utility class for exporting and importing data.
+
+**Methods:**
+
+- `exportToCsv(CellsDataController, CellsController)`: Export data to CSV string
+- `importFromCsv(CellsDataController, CellsController, String csvString)`: Import data from CSV string
+- `exportToJson(CellsDataController, CellsController)`: Export data to JSON
+- `importFromJson(CellsDataController, CellsController, Map<String, dynamic> json)`: Import data from JSON
 
 ## Examples
 

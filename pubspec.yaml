@@ -1,6 +1,6 @@
 name: custom_roi_cells
-description: "Flutter package for creating grid cells with customizable screen size and number of cells for ROI camera applications."
-version: 0.2.2
+description: "Flutter package for creating grid cells with customizable screen size and number of cells for ROI camera applications, data tables, Excel-like spreadsheets, and more!"
+version: 0.3.0
 homepage: https://github.com/qminhminh/custom_roi_cells.git
 repository: https://github.com/qminhminh/custom_roi_cells.git
 issue_tracker: https://github.com/qminhminh/custom_roi_cells.git/issues
@@ -24,7 +24,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
 
-  # To add assets to your package, add an assets section, like this:
+  # To add assets to your package, add an assets section, like trhis:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
