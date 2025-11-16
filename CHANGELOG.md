@@ -1,3 +1,16 @@
+## 0.3.6
+
+* **Code Quality Improvements:**
+  * Fixed static analysis issues - removed unnecessary library names
+  * Replaced deprecated `withOpacity` with `withValues` for better precision
+  * Fixed unnecessary imports (removed `foundation.dart` where `material.dart` is sufficient)
+  * Improved code formatting and consistency
+  * Fixed angle brackets in documentation comments (using backticks for code formatting)
+  * Enhanced code readability with better formatting
+* **Documentation Fixes:**
+  * Fixed image URL in README.md to use correct branch name (`master` instead of `main`)
+  * Improved documentation formatting
+
 ## 0.3.5
 
 * **Custom Row and Column Colors (NEW!):**

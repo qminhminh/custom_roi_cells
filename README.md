@@ -53,7 +53,7 @@ Flutter package for creating grid cells with customizable screen size and number
 ### Screenshots
 
 #### ROI Camera Application Example
-![ROI Camera Application](https://raw.githubusercontent.com/qminhminh/custom_roi_cells/main/images/roi.jpg)
+![ROI Camera Application](https://raw.githubusercontent.com/qminhminh/custom_roi_cells/master/images/roi.jpg)
 
 *Grid cells overlay on camera feed for defining warning zones (Cảnh báo vùng)*
 
