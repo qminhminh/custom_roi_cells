@@ -83,6 +83,49 @@ class _ROISelectionPageState extends State<ROISelectionPage> {
   );
 
   List<int> selectedIndices = [];
+  DragSelectionMode dragMode = DragSelectionMode.multipleCells;
+
+  // Màu sắc tùy chỉnh
+  Color selectedCellColor = Colors.red.withValues(alpha: 0.7);
+  Color borderColor = Colors.blue[300]!;
+  Color? rowColor;
+  Color? columnColor;
+  bool enableRowColor = false;
+  bool enableColumnColor = false;
+
+  // Tạo map màu cho tất cả các hàng
+  Map<int, Color> _generateRowColors(Color color) {
+    final Map<int, Color> rowColors = {};
+    for (int i = 0; i < controller.cellsRows; i++) {
+      rowColors[i] = color;
+    }
+    return rowColors;
+  }
+
+  // Tạo map màu cho tất cả các cột
+  Map<int, Color> _generateColumnColors(Color color) {
+    final Map<int, Color> columnColors = {};
+    for (int i = 0; i < controller.cellsColumns; i++) {
+      columnColors[i] = color;
+    }
+    return columnColors;
+  }
+
+  // Hiển thị color picker
+  void _showColorPicker(
+    BuildContext context,
+    Color currentColor,
+    void Function(Color) onColorChanged,
+  ) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => ColorPickerDialog(
+            currentColor: currentColor,
+            onColorChanged: onColorChanged,
+          ),
+    );
+  }
 
   @override
   void dispose() {
@@ -100,22 +143,243 @@ class _ROISelectionPageState extends State<ROISelectionPage> {
           Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.1),
+              color: Colors.blue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.blue),
             ),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   '📱 ROI Selection',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 8),
-                Text('• Tap to select/deselect a cell'),
-                Text('• Drag from unselected cell → Select multiple cells'),
-                Text('• Drag from selected cell → Deselect cells'),
-                Text('• Selected cells are highlighted in red'),
+                const SizedBox(height: 8),
+                const Text('• Tap to select/deselect a cell'),
+                Text(
+                  '• Drag mode: ${dragMode == DragSelectionMode.singleCell ? "Select each cell" : "Select multiple cells (rectangle)"}',
+                ),
+                const Text('• Drag from unselected cell → Select cells'),
+                const Text('• Drag from selected cell → Deselect cells'),
+                const Text('• Selected cells are highlighted in red'),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    const Text('Drag Selection Mode: '),
+                    const SizedBox(width: 8),
+                    ChoiceChips(
+                      selected: dragMode,
+                      onChanged: (mode) {
+                        setState(() {
+                          dragMode = mode;
+                          controller.clearSelection();
+                          selectedIndices = [];
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Color Customization Panel
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.purple.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.purple),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '🎨 Color Customization',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                // Selected Cell Color
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text('Highlight color (selected cell):'),
+                    ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap:
+                          () => _showColorPicker(context, selectedCellColor, (
+                            color,
+                          ) {
+                            setState(() {
+                              selectedCellColor = color;
+                            });
+                          }),
+                      child: Container(
+                        width: 50,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: selectedCellColor,
+                          border: Border.all(color: Colors.grey, width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                // Border Color (Grid Lines)
+                Row(
+                  children: [
+                    const Expanded(child: Text('Grid line color:')),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap:
+                          () => _showColorPicker(context, borderColor, (color) {
+                            setState(() {
+                              borderColor = color;
+                            });
+                          }),
+                      child: Container(
+                        width: 50,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: borderColor,
+                          border: Border.all(color: Colors.grey, width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                // Row Color
+                Row(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: enableRowColor,
+                            onChanged: (value) {
+                              setState(() {
+                                enableRowColor = value ?? false;
+                                if (!enableRowColor) {
+                                  rowColor = null;
+                                } else if (rowColor == null) {
+                                  rowColor = Colors.yellow.withValues(
+                                    alpha: 0.3,
+                                  );
+                                }
+                              });
+                            },
+                          ),
+                          const Expanded(child: Text('Row color:')),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    if (enableRowColor)
+                      GestureDetector(
+                        onTap:
+                            () => _showColorPicker(
+                              context,
+                              rowColor ?? Colors.yellow.withValues(alpha: 0.3),
+                              (color) {
+                                setState(() {
+                                  rowColor = color;
+                                });
+                              },
+                            ),
+                        child: Container(
+                          width: 50,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color:
+                                rowColor ??
+                                Colors.yellow.withValues(alpha: 0.3),
+                            border: Border.all(color: Colors.grey, width: 2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      )
+                    else
+                      Container(
+                        width: 50,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          border: Border.all(color: Colors.grey, width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.block, color: Colors.grey),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                // Column Color
+                Row(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: enableColumnColor,
+                            onChanged: (value) {
+                              setState(() {
+                                enableColumnColor = value ?? false;
+                                if (!enableColumnColor) {
+                                  columnColor = null;
+                                } else if (columnColor == null) {
+                                  columnColor = Colors.blue.withValues(
+                                    alpha: 0.3,
+                                  );
+                                }
+                              });
+                            },
+                          ),
+                          const Expanded(child: Text('Column color:')),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    if (enableColumnColor)
+                      GestureDetector(
+                        onTap:
+                            () => _showColorPicker(
+                              context,
+                              columnColor ?? Colors.blue.withValues(alpha: 0.3),
+                              (color) {
+                                setState(() {
+                                  columnColor = color;
+                                });
+                              },
+                            ),
+                        child: Container(
+                          width: 50,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color:
+                                columnColor ??
+                                Colors.blue.withValues(alpha: 0.3),
+                            border: Border.all(color: Colors.grey, width: 2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      )
+                    else
+                      Container(
+                        width: 50,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          border: Border.all(color: Colors.grey, width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.block, color: Colors.grey),
+                      ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -136,10 +400,19 @@ class _ROISelectionPageState extends State<ROISelectionPage> {
               child: CellsWidget(
                 controller: controller,
                 enableSelection: true,
-                borderColor: Colors.blue[300]!,
+                dragSelectionMode: dragMode,
+                borderColor: borderColor,
                 borderWidth: 0.5,
                 cellColor: Colors.white,
-                selectedCellColor: Colors.red.withOpacity(0.7),
+                selectedCellColor: selectedCellColor,
+                rowColors:
+                    enableRowColor && rowColor != null
+                        ? _generateRowColors(rowColor!)
+                        : null,
+                columnColors:
+                    enableColumnColor && columnColor != null
+                        ? _generateColumnColors(columnColor!)
+                        : null,
                 onSelectionChanged: (indices) {
                   setState(() {
                     selectedIndices = indices;
@@ -322,7 +595,7 @@ class _ExcelTablePageState extends State<ExcelTablePage> {
           Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.1),
+              color: Colors.green.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.green),
             ),
@@ -503,6 +776,249 @@ class _ExcelTablePageState extends State<ExcelTablePage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Color Picker Dialog
+class ColorPickerDialog extends StatefulWidget {
+  final Color currentColor;
+  final void Function(Color) onColorChanged;
+
+  const ColorPickerDialog({
+    super.key,
+    required this.currentColor,
+    required this.onColorChanged,
+  });
+
+  @override
+  State<ColorPickerDialog> createState() => _ColorPickerDialogState();
+}
+
+class _ColorPickerDialogState extends State<ColorPickerDialog> {
+  late Color selectedColor;
+  double opacity = 1.0;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedColor = widget.currentColor;
+    opacity = widget.currentColor.opacity;
+  }
+
+  // Danh sách màu cơ bản
+  final List<Color> presetColors = [
+    Colors.red,
+    Colors.orange,
+    Colors.yellow,
+    Colors.green,
+    Colors.blue,
+    Colors.indigo,
+    Colors.purple,
+    Colors.pink,
+    Colors.brown,
+    Colors.grey,
+    Colors.black,
+    Colors.white,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Choose Color'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Hiển thị màu đã chọn
+            Container(
+              width: double.infinity,
+              height: 80,
+              decoration: BoxDecoration(
+                color: selectedColor.withValues(alpha: opacity),
+                border: Border.all(color: Colors.grey, width: 2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Text(
+                  'Selected Color',
+                  style: TextStyle(
+                    color:
+                        selectedColor.computeLuminance() > 0.5
+                            ? Colors.black
+                            : Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Opacity slider
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Opacity: ${(opacity * 100).toInt()}%'),
+                Slider(
+                  value: opacity,
+                  min: 0.0,
+                  max: 1.0,
+                  divisions: 100,
+                  onChanged: (value) {
+                    setState(() {
+                      opacity = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Preset colors
+            const Text(
+              'Preset Colors:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children:
+                  presetColors.map((color) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedColor = color;
+                        });
+                      },
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: color,
+                          border: Border.all(
+                            color:
+                                selectedColor == color
+                                    ? Colors.black
+                                    : Colors.grey,
+                            width: selectedColor == color ? 3 : 1,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child:
+                            selectedColor == color
+                                ? const Icon(Icons.check, color: Colors.white)
+                                : null,
+                      ),
+                    );
+                  }).toList(),
+            ),
+            const SizedBox(height: 16),
+            // RGB sliders
+            _buildColorSlider('Red', selectedColor.red, 255, (value) {
+              setState(() {
+                selectedColor = Color.fromRGBO(
+                  value.toInt(),
+                  selectedColor.green,
+                  selectedColor.blue,
+                  opacity,
+                );
+              });
+            }),
+            _buildColorSlider('Green', selectedColor.green, 255, (value) {
+              setState(() {
+                selectedColor = Color.fromRGBO(
+                  selectedColor.red,
+                  value.toInt(),
+                  selectedColor.blue,
+                  opacity,
+                );
+              });
+            }),
+            _buildColorSlider('Blue', selectedColor.blue, 255, (value) {
+              setState(() {
+                selectedColor = Color.fromRGBO(
+                  selectedColor.red,
+                  selectedColor.green,
+                  value.toInt(),
+                  opacity,
+                );
+              });
+            }),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            widget.onColorChanged(selectedColor.withValues(alpha: opacity));
+            Navigator.of(context).pop();
+          },
+          child: const Text('Apply'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildColorSlider(
+    String label,
+    int value,
+    int max,
+    void Function(double) onChanged,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('$label: $value'),
+        Slider(
+          value: value.toDouble(),
+          min: 0,
+          max: max.toDouble(),
+          divisions: max,
+          onChanged: onChanged,
+        ),
+      ],
+    );
+  }
+}
+
+/// Widget để chọn chế độ drag selection
+class ChoiceChips extends StatelessWidget {
+  final DragSelectionMode selected;
+  final void Function(DragSelectionMode) onChanged;
+
+  const ChoiceChips({
+    super.key,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        ChoiceChip(
+          label: const Text('Single Cell'),
+          selected: selected == DragSelectionMode.singleCell,
+          onSelected: (isSelected) {
+            if (isSelected) {
+              onChanged(DragSelectionMode.singleCell);
+            }
+          },
+        ),
+        const SizedBox(width: 8),
+        ChoiceChip(
+          label: const Text('Multiple Cells'),
+          selected: selected == DragSelectionMode.multipleCells,
+          onSelected: (isSelected) {
+            if (isSelected) {
+              onChanged(DragSelectionMode.multipleCells);
+            }
+          },
+        ),
+      ],
     );
   }
 }

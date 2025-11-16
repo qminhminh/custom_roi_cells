@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'cells_controller.dart';
 
+/// Chế độ kéo chọn cells
+enum DragSelectionMode {
+  /// Kéo chọn từng ô (chỉ chọn ô hiện tại đang kéo qua)
+  singleCell,
+
+  /// Kéo chọn nhiều ô (chọn tất cả ô trong hình chữ nhật)
+  multipleCells,
+}
+
 /// Widget hiển thị grid cells với khả năng tùy chỉnh kích thước màn hình và số lượng cells
 class CellsWidget extends StatefulWidget {
   /// Controller để quản lý trạng thái
@@ -42,6 +51,10 @@ class CellsWidget extends StatefulWidget {
   /// Cho phép chọn cells (tap và drag)
   final bool enableSelection;
 
+  /// Chế độ kéo chọn cells (singleCell: chọn từng ô, multipleCells: chọn nhiều ô)
+  /// Mặc định: multipleCells (chọn nhiều ô trong hình chữ nhật)
+  final DragSelectionMode dragSelectionMode;
+
   /// Màu của cells được chọn
   final Color? selectedCellColor;
 
@@ -77,6 +90,7 @@ class CellsWidget extends StatefulWidget {
     this.numberColor,
     this.numberFontSize,
     this.enableSelection = false,
+    this.dragSelectionMode = DragSelectionMode.multipleCells,
     this.selectedCellColor,
     this.unselectedCellColor,
     this.rowColors,
@@ -107,6 +121,7 @@ class _CellsWidgetState extends State<CellsWidget> {
   final GlobalKey _gridKey = GlobalKey();
   final Map<int, GlobalKey> _cellKeys =
       {}; // Map index -> GlobalKey cho mỗi cell
+  Offset? _pointerDownPosition;
 
   @override
   void initState() {
@@ -190,31 +205,6 @@ class _CellsWidgetState extends State<CellsWidget> {
     }
   }
 
-  void _onPanStart(DragStartDetails details, int index) {
-    try {
-      if (widget.enableSelection && index >= 0) {
-        _dragStartIndex = index;
-        _isDragging = true;
-        _lastProcessedRange.clear(); // ignore: prefer_final_fields
-        // Xác định mode dựa vào trạng thái của cell bắt đầu
-        // Nếu cell đã chọn → mode bỏ chọn, nếu chưa chọn → mode chọn
-        _dragSelectMode = !_controller.isCellSelected(index);
-
-        // Xử lý cell bắt đầu ngay lập tức
-        if (_dragSelectMode) {
-          _controller.selectCell(index);
-        } else {
-          _controller.deselectCell(index);
-        }
-        _lastProcessedRange.add(index);
-      }
-    } catch (e) {
-      // Ignore error để tránh crash
-      _isDragging = false;
-      _dragStartIndex = null;
-    }
-  }
-
   int? _getCellIndexFromHitTest(Offset globalPosition) {
     try {
       // Sử dụng HitTest để tìm widget nào đang được touch
@@ -263,37 +253,56 @@ class _CellsWidgetState extends State<CellsWidget> {
         if (currentIndex != null &&
             currentIndex >= 0 &&
             _dragStartIndex != null) {
-          // Tính toán range từ start đến current (bao gồm cả hàng và cột)
-          // Chuyển đổi index sang row và column để chọn hình chữ nhật
-          final startRow = _dragStartIndex! ~/ _controller.cellsColumns;
-          final startCol = _dragStartIndex! % _controller.cellsColumns;
-          final currentRow = currentIndex ~/ _controller.cellsColumns;
-          final currentCol = currentIndex % _controller.cellsColumns;
-
-          final minRow = startRow < currentRow ? startRow : currentRow;
-          final maxRow = startRow > currentRow ? startRow : currentRow;
-          final minCol = startCol < currentCol ? startCol : currentCol;
-          final maxCol = startCol > currentCol ? startCol : currentCol;
-
-          // Chọn tất cả cells trong hình chữ nhật
-          for (int row = minRow; row <= maxRow; row++) {
-            for (int col = minCol; col <= maxCol; col++) {
-              final i = row * _controller.cellsColumns + col;
-              if (i >= 0 &&
-                  i < _controller.totalCells &&
-                  !_lastProcessedRange.contains(i)) {
-                if (_dragSelectMode) {
-                  // Mode chọn: chọn cell nếu chưa chọn
-                  if (!_controller.isCellSelected(i)) {
-                    _controller.selectCell(i);
-                  }
-                } else {
-                  // Mode bỏ chọn: bỏ chọn cell nếu đã chọn
-                  if (_controller.isCellSelected(i)) {
-                    _controller.deselectCell(i);
-                  }
+          if (widget.dragSelectionMode == DragSelectionMode.singleCell) {
+            // Chế độ kéo chọn từng ô: chỉ chọn ô hiện tại đang kéo qua
+            if (!_lastProcessedRange.contains(currentIndex)) {
+              if (_dragSelectMode) {
+                // Mode chọn: chọn cell nếu chưa chọn
+                if (!_controller.isCellSelected(currentIndex)) {
+                  _controller.selectCell(currentIndex);
                 }
-                _lastProcessedRange.add(i);
+              } else {
+                // Mode bỏ chọn: bỏ chọn cell nếu đã chọn
+                if (_controller.isCellSelected(currentIndex)) {
+                  _controller.deselectCell(currentIndex);
+                }
+              }
+              _lastProcessedRange.add(currentIndex);
+            }
+          } else {
+            // Chế độ kéo chọn nhiều ô: chọn tất cả ô trong hình chữ nhật
+            // Tính toán range từ start đến current (bao gồm cả hàng và cột)
+            // Chuyển đổi index sang row và column để chọn hình chữ nhật
+            final startRow = _dragStartIndex! ~/ _controller.cellsColumns;
+            final startCol = _dragStartIndex! % _controller.cellsColumns;
+            final currentRow = currentIndex ~/ _controller.cellsColumns;
+            final currentCol = currentIndex % _controller.cellsColumns;
+
+            final minRow = startRow < currentRow ? startRow : currentRow;
+            final maxRow = startRow > currentRow ? startRow : currentRow;
+            final minCol = startCol < currentCol ? startCol : currentCol;
+            final maxCol = startCol > currentCol ? startCol : currentCol;
+
+            // Chọn tất cả cells trong hình chữ nhật
+            for (int row = minRow; row <= maxRow; row++) {
+              for (int col = minCol; col <= maxCol; col++) {
+                final i = row * _controller.cellsColumns + col;
+                if (i >= 0 &&
+                    i < _controller.totalCells &&
+                    !_lastProcessedRange.contains(i)) {
+                  if (_dragSelectMode) {
+                    // Mode chọn: chọn cell nếu chưa chọn
+                    if (!_controller.isCellSelected(i)) {
+                      _controller.selectCell(i);
+                    }
+                  } else {
+                    // Mode bỏ chọn: bỏ chọn cell nếu đã chọn
+                    if (_controller.isCellSelected(i)) {
+                      _controller.deselectCell(i);
+                    }
+                  }
+                  _lastProcessedRange.add(i);
+                }
               }
             }
           }
@@ -335,12 +344,10 @@ class _CellsWidgetState extends State<CellsWidget> {
             widget.enableSelection
                 ? (event) {
                   try {
+                    _pointerDownPosition = event.position;
                     final index = _getCellIndexFromHitTest(event.position);
                     if (index != null && index >= 0) {
-                      _onPanStart(
-                        DragStartDetails(globalPosition: event.position),
-                        index,
-                      );
+                      _dragStartIndex = index;
                     }
                   } catch (e) {
                     // Ignore error
@@ -348,14 +355,38 @@ class _CellsWidgetState extends State<CellsWidget> {
                 }
                 : null,
         onPointerMove:
-            widget.enableSelection && _isDragging
+            widget.enableSelection
                 ? (event) {
                   try {
-                    final index = _getCellIndexFromHitTest(event.position);
-                    if (index != null && index >= 0) {
-                      _onPanUpdate(
-                        DragUpdateDetails(globalPosition: event.position),
-                      );
+                    // Nếu có movement đáng kể, bắt đầu drag
+                    if (_pointerDownPosition != null &&
+                        _dragStartIndex != null) {
+                      final distance =
+                          (event.position - _pointerDownPosition!).distance;
+                      if (distance > 5.0) {
+                        // Có movement, bắt đầu drag
+                        if (!_isDragging) {
+                          _isDragging = true;
+                          _lastProcessedRange.clear();
+                          // Xác định mode dựa vào trạng thái của cell bắt đầu
+                          _dragSelectMode =
+                              !_controller.isCellSelected(_dragStartIndex!);
+                          // Xử lý cell bắt đầu ngay lập tức
+                          if (_dragSelectMode) {
+                            _controller.selectCell(_dragStartIndex!);
+                          } else {
+                            _controller.deselectCell(_dragStartIndex!);
+                          }
+                          _lastProcessedRange.add(_dragStartIndex!);
+                        }
+                        // Tiếp tục drag
+                        final index = _getCellIndexFromHitTest(event.position);
+                        if (index != null && index >= 0) {
+                          _onPanUpdate(
+                            DragUpdateDetails(globalPosition: event.position),
+                          );
+                        }
+                      }
                     }
                   } catch (e) {
                     // Ignore error
@@ -363,17 +394,42 @@ class _CellsWidgetState extends State<CellsWidget> {
                 }
                 : null,
         onPointerUp:
-            widget.enableSelection && _isDragging
+            widget.enableSelection
                 ? (event) {
-                  _onPanEnd(DragEndDetails());
+                  try {
+                    if (_isDragging) {
+                      // Đang drag, kết thúc drag
+                      _onPanEnd(DragEndDetails());
+                    } else if (_dragStartIndex != null) {
+                      // Không có drag, đây là tap đơn giản - xử lý ngay
+                      _onCellTap(_dragStartIndex!);
+                    }
+                    // Reset
+                    _pointerDownPosition = null;
+                    _dragStartIndex = null;
+                    _isDragging = false;
+                  } catch (e) {
+                    // Ignore error
+                  }
                 }
                 : null,
         onPointerCancel:
-            widget.enableSelection && _isDragging
+            widget.enableSelection
                 ? (event) {
-                  _onPanEnd(DragEndDetails());
+                  try {
+                    if (_isDragging) {
+                      _onPanEnd(DragEndDetails());
+                    }
+                    // Reset
+                    _pointerDownPosition = null;
+                    _dragStartIndex = null;
+                    _isDragging = false;
+                  } catch (e) {
+                    // Ignore error
+                  }
                 }
                 : null,
+        behavior: HitTestBehavior.translucent,
         child: Container(
           key: _gridKey,
           width: _controller.screenWidth > 0 ? _controller.screenWidth : 600.0,
@@ -434,37 +490,34 @@ class _CellsWidgetState extends State<CellsWidget> {
                           }
                         }
 
-                        return GestureDetector(
-                          onTap: () => _onCellTap(index),
-                          child: Container(
-                            key: cellKey,
-                            decoration: BoxDecoration(
-                              color: backgroundColor,
-                              border: Border.all(
-                                color: borderColor,
-                                width: borderWidth,
-                              ),
+                        return Container(
+                          key: cellKey,
+                          decoration: BoxDecoration(
+                            color: backgroundColor,
+                            border: Border.all(
+                              color: borderColor,
+                              width: borderWidth,
                             ),
-                            child:
-                                widget.showCellNumbers
-                                    ? Center(
-                                      child: Text(
-                                        '$index',
-                                        style: TextStyle(
-                                          color:
-                                              isSelected
-                                                  ? Colors.white
-                                                  : numberColor,
-                                          fontSize: numberFontSize,
-                                          fontWeight:
-                                              isSelected
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal,
-                                        ),
-                                      ),
-                                    )
-                                    : null,
                           ),
+                          child:
+                              widget.showCellNumbers
+                                  ? Center(
+                                    child: Text(
+                                      '$index',
+                                      style: TextStyle(
+                                        color:
+                                            isSelected
+                                                ? Colors.white
+                                                : numberColor,
+                                        fontSize: numberFontSize,
+                                        fontWeight:
+                                            isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                      ),
+                                    ),
+                                  )
+                                  : null,
                         );
                       } catch (e) {
                         // Fallback widget nếu có lỗi

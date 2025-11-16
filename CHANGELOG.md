@@ -1,3 +1,19 @@
+## 0.3.7
+
+* **Bug Fixes:**
+  * Fixed tap selection not working - simplified tap/drag logic for better reliability
+  * Improved pointer event handling to properly distinguish between tap and drag gestures
+  * Removed unnecessary GestureDetector wrapper that was blocking tap events
+* **New Features:**
+  * Added grid line color customization option in example app
+  * Users can now customize border/grid line color through UI
+* **UI Improvements:**
+  * Translated all UI text to English for better internationalization
+  * Improved color customization panel layout and organization
+* **Code Quality:**
+  * Simplified tap detection logic for better performance
+  * Removed unused variables and improved code cleanliness
+
 ## 0.3.6
 
 * **Code Quality Improvements:**

@@ -1,6 +1,6 @@
 name: custom_roi_cells
 description: "Flutter package for creating grid cells with customizable screen size and number of cells for ROI camera applications, data tables, Excel-like spreadsheets, and more!"
-version: 0.3.6
+version: 0.3.7
 homepage: https://github.com/qminhminh/custom_roi_cells.git
 repository: https://github.com/qminhminh/custom_roi_cells.git
 issue_tracker: https://github.com/qminhminh/custom_roi_cells.git/issues
