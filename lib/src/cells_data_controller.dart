@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'cells_controller.dart';
 
@@ -6,28 +5,28 @@ import 'cells_controller.dart';
 class CellData {
   /// Text trong cell
   String text;
-  
+
   /// Màu nền của cell
   Color? backgroundColor;
-  
+
   /// Màu chữ
   Color? textColor;
-  
+
   /// Font size
   double? fontSize;
-  
+
   /// Font weight
   FontWeight? fontWeight;
-  
+
   /// Text alignment
   TextAlign? textAlign;
-  
+
   /// Cell có được merge không
   bool isMerged;
-  
+
   /// Row span nếu merged
   int rowSpan;
-  
+
   /// Column span nếu merged
   int colSpan;
 
@@ -135,15 +134,23 @@ class CellsDataController extends ChangeNotifier {
     }
   }
 
-  /// Load dữ liệu từ List<List<String>> (như Excel rows/columns)
+  /// Load dữ liệu từ `List<List<String>>` (như Excel rows/columns)
   void loadData(List<List<String>> data) {
     try {
       _cellTextMap.clear();
       _cellDataMap.clear();
-      
-      for (int row = 0; row < data.length && row < _cellsController.cellsRows; row++) {
+
+      for (
+        int row = 0;
+        row < data.length && row < _cellsController.cellsRows;
+        row++
+      ) {
         final rowData = data[row];
-        for (int col = 0; col < rowData.length && col < _cellsController.cellsColumns; col++) {
+        for (
+          int col = 0;
+          col < rowData.length && col < _cellsController.cellsColumns;
+          col++
+        ) {
           final index = row * _cellsController.cellsColumns + col;
           if (index < _cellsController.totalCells) {
             _cellTextMap[index] = rowData[col];
@@ -156,15 +163,22 @@ class CellsDataController extends ChangeNotifier {
     }
   }
 
-  /// Load dữ liệu từ List<Map<String, dynamic>> (như danh sách objects)
-  void loadDataFromMaps(List<Map<String, dynamic>> data, {List<String>? columns}) {
+  /// Load dữ liệu từ `List<Map<String, dynamic>>` (như danh sách objects)
+  void loadDataFromMaps(
+    List<Map<String, dynamic>> data, {
+    List<String>? columns,
+  }) {
     try {
       _cellTextMap.clear();
       _cellDataMap.clear();
-      
+
       // Header row (nếu có columns)
       if (columns != null && columns.isNotEmpty) {
-        for (int col = 0; col < columns.length && col < _cellsController.cellsColumns; col++) {
+        for (
+          int col = 0;
+          col < columns.length && col < _cellsController.cellsColumns;
+          col++
+        ) {
           _cellTextMap[col] = columns[col];
           // Style header
           _cellDataMap[col] = CellData(
@@ -174,16 +188,25 @@ class CellsDataController extends ChangeNotifier {
           );
         }
       }
-      
+
       // Data rows
       int startRow = columns != null ? 1 : 0;
-      for (int row = 0; row < data.length && (startRow + row) < _cellsController.cellsRows; row++) {
+      for (
+        int row = 0;
+        row < data.length && (startRow + row) < _cellsController.cellsRows;
+        row++
+      ) {
         final rowData = data[row];
-        final values = columns != null
-            ? columns.map((col) => rowData[col]?.toString() ?? '').toList()
-            : rowData.values.map((v) => v?.toString() ?? '').toList();
-        
-        for (int col = 0; col < values.length && col < _cellsController.cellsColumns; col++) {
+        final values =
+            columns != null
+                ? columns.map((col) => rowData[col]?.toString() ?? '').toList()
+                : rowData.values.map((v) => v?.toString() ?? '').toList();
+
+        for (
+          int col = 0;
+          col < values.length && col < _cellsController.cellsColumns;
+          col++
+        ) {
           final index = (startRow + row) * _cellsController.cellsColumns + col;
           if (index < _cellsController.totalCells) {
             _cellTextMap[index] = values[col];
@@ -196,7 +219,7 @@ class CellsDataController extends ChangeNotifier {
     }
   }
 
-  /// Export dữ liệu ra List<List<String>>
+  /// Export dữ liệu ra `List<List<String>>`
   List<List<String>> exportData() {
     try {
       final List<List<String>> result = [];
@@ -233,9 +256,15 @@ class CellsDataController extends ChangeNotifier {
     try {
       final data = json['data'] as List<dynamic>?;
       if (data != null) {
-        final List<List<String>> listData = data
-            .map((row) => (row as List<dynamic>).map((cell) => cell.toString()).toList())
-            .toList();
+        final List<List<String>> listData =
+            data
+                .map(
+                  (row) =>
+                      (row as List<dynamic>)
+                          .map((cell) => cell.toString())
+                          .toList(),
+                )
+                .toList();
         loadData(listData);
       }
     } catch (e) {
@@ -285,4 +314,3 @@ class CellsDataController extends ChangeNotifier {
     super.dispose();
   }
 }
-

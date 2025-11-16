@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'cells_controller.dart';
 
 /// Controller để quản lý kích thước tùy chỉnh của các cột và hàng

@@ -5,7 +5,7 @@ import 'cells_data_widget.dart';
 import 'cells_size_controller.dart';
 
 /// Widget hiển thị dữ liệu dạng bảng (table) như Excel
-/// Hỗ trợ hiển thị List<List<String>> hoặc List<Map>
+/// Hỗ trợ hiển thị `List<List<String>>` hoặc `List<Map>`
 class CellsTableWidget extends StatefulWidget {
   /// CellsController để quản lý grid
   final CellsController controller;
@@ -16,10 +16,10 @@ class CellsTableWidget extends StatefulWidget {
   /// CellsSizeController để quản lý kích thước tùy chỉnh
   final CellsSizeController? sizeController;
   
-  /// Dữ liệu dạng List<List<String>> (rows x columns)
+  /// Dữ liệu dạng `List<List<String>>` (rows x columns)
   final List<List<String>>? data;
   
-  /// Dữ liệu dạng List<Map<String, dynamic>>
+  /// Dữ liệu dạng `List<Map<String, dynamic>>`
   final List<Map<String, dynamic>>? mapData;
   
   /// Tên các cột (nếu dùng mapData)

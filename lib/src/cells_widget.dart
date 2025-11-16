@@ -102,10 +102,11 @@ class _CellsWidgetState extends State<CellsWidget> {
   int? _dragStartIndex;
   bool _isDragging = false;
   bool _dragSelectMode = true; // true = chọn, false = bỏ chọn
-  Set<int> _lastProcessedRange =
-      {}; // Lưu range đã xử lý để tránh toggle nhiều lần
+  final Set<int> _lastProcessedRange =
+      <int>{}; // Lưu range đã xử lý để tránh toggle nhiều lần
   final GlobalKey _gridKey = GlobalKey();
-  final Map<int, GlobalKey> _cellKeys = {}; // Map index -> GlobalKey cho mỗi cell
+  final Map<int, GlobalKey> _cellKeys =
+      {}; // Map index -> GlobalKey cho mỗi cell
 
   @override
   void initState() {
@@ -194,7 +195,7 @@ class _CellsWidgetState extends State<CellsWidget> {
       if (widget.enableSelection && index >= 0) {
         _dragStartIndex = index;
         _isDragging = true;
-        _lastProcessedRange.clear();
+        _lastProcessedRange.clear(); // ignore: prefer_final_fields
         // Xác định mode dựa vào trạng thái của cell bắt đầu
         // Nếu cell đã chọn → mode bỏ chọn, nếu chưa chọn → mode chọn
         _dragSelectMode = !_controller.isCellSelected(index);
@@ -232,7 +233,7 @@ class _CellsWidgetState extends State<CellsWidget> {
         final cellKey = entry.value;
         final cellIndex = entry.key;
         final cellContext = cellKey.currentContext;
-        
+
         if (cellContext != null) {
           final cellBox = cellContext.findRenderObject() as RenderBox?;
           if (cellBox != null) {
@@ -259,24 +260,28 @@ class _CellsWidgetState extends State<CellsWidget> {
     try {
       if (widget.enableSelection && _isDragging && _dragStartIndex != null) {
         final currentIndex = _getCellIndexFromHitTest(details.globalPosition);
-        if (currentIndex != null && currentIndex >= 0 && _dragStartIndex != null) {
+        if (currentIndex != null &&
+            currentIndex >= 0 &&
+            _dragStartIndex != null) {
           // Tính toán range từ start đến current (bao gồm cả hàng và cột)
           // Chuyển đổi index sang row và column để chọn hình chữ nhật
           final startRow = _dragStartIndex! ~/ _controller.cellsColumns;
           final startCol = _dragStartIndex! % _controller.cellsColumns;
           final currentRow = currentIndex ~/ _controller.cellsColumns;
           final currentCol = currentIndex % _controller.cellsColumns;
-          
+
           final minRow = startRow < currentRow ? startRow : currentRow;
           final maxRow = startRow > currentRow ? startRow : currentRow;
           final minCol = startCol < currentCol ? startCol : currentCol;
           final maxCol = startCol > currentCol ? startCol : currentCol;
-          
+
           // Chọn tất cả cells trong hình chữ nhật
           for (int row = minRow; row <= maxRow; row++) {
             for (int col = minCol; col <= maxCol; col++) {
               final i = row * _controller.cellsColumns + col;
-              if (i >= 0 && i < _controller.totalCells && !_lastProcessedRange.contains(i)) {
+              if (i >= 0 &&
+                  i < _controller.totalCells &&
+                  !_lastProcessedRange.contains(i)) {
                 if (_dragSelectMode) {
                   // Mode chọn: chọn cell nếu chưa chọn
                   if (!_controller.isCellSelected(i)) {
@@ -315,7 +320,7 @@ class _CellsWidgetState extends State<CellsWidget> {
       final defaultCellColor = widget.cellColor ?? Colors.transparent;
       final unselectedColor = widget.unselectedCellColor ?? defaultCellColor;
       final selectedColor =
-          widget.selectedCellColor ?? Colors.red.withOpacity(0.5);
+          widget.selectedCellColor ?? Colors.red.withValues(alpha: 0.5);
       final numberColor = widget.numberColor ?? Colors.black;
       final numberFontSize = widget.numberFontSize ?? 12.0;
 
@@ -326,40 +331,49 @@ class _CellsWidgetState extends State<CellsWidget> {
           _controller.cellsColumns > 0 ? _controller.cellsColumns : 1;
 
       return Listener(
-        onPointerDown: widget.enableSelection
-            ? (event) {
-                try {
-                  final index = _getCellIndexFromHitTest(event.position);
-                  if (index != null && index >= 0) {
-                    _onPanStart(DragStartDetails(globalPosition: event.position), index);
+        onPointerDown:
+            widget.enableSelection
+                ? (event) {
+                  try {
+                    final index = _getCellIndexFromHitTest(event.position);
+                    if (index != null && index >= 0) {
+                      _onPanStart(
+                        DragStartDetails(globalPosition: event.position),
+                        index,
+                      );
+                    }
+                  } catch (e) {
+                    // Ignore error
                   }
-                } catch (e) {
-                  // Ignore error
                 }
-              }
-            : null,
-        onPointerMove: widget.enableSelection && _isDragging
-            ? (event) {
-                try {
-                  final index = _getCellIndexFromHitTest(event.position);
-                  if (index != null && index >= 0) {
-                    _onPanUpdate(DragUpdateDetails(globalPosition: event.position));
+                : null,
+        onPointerMove:
+            widget.enableSelection && _isDragging
+                ? (event) {
+                  try {
+                    final index = _getCellIndexFromHitTest(event.position);
+                    if (index != null && index >= 0) {
+                      _onPanUpdate(
+                        DragUpdateDetails(globalPosition: event.position),
+                      );
+                    }
+                  } catch (e) {
+                    // Ignore error
                   }
-                } catch (e) {
-                  // Ignore error
                 }
-              }
-            : null,
-        onPointerUp: widget.enableSelection && _isDragging
-            ? (event) {
-                _onPanEnd(DragEndDetails());
-              }
-            : null,
-        onPointerCancel: widget.enableSelection && _isDragging
-            ? (event) {
-                _onPanEnd(DragEndDetails());
-              }
-            : null,
+                : null,
+        onPointerUp:
+            widget.enableSelection && _isDragging
+                ? (event) {
+                  _onPanEnd(DragEndDetails());
+                }
+                : null,
+        onPointerCancel:
+            widget.enableSelection && _isDragging
+                ? (event) {
+                  _onPanEnd(DragEndDetails());
+                }
+                : null,
         child: Container(
           key: _gridKey,
           width: _controller.screenWidth > 0 ? _controller.screenWidth : 600.0,
@@ -386,11 +400,11 @@ class _CellsWidgetState extends State<CellsWidget> {
                           _cellKeys[index] = GlobalKey();
                         }
                         final cellKey = _cellKeys[index]!;
-                        
+
                         final isSelected =
                             widget.enableSelection &&
                             _controller.isCellSelected(index);
-                        
+
                         // Tính toán màu nền theo thứ tự ưu tiên:
                         // 1. Nếu cell được chọn → dùng selectedCellColor
                         // 2. Nếu có màu theo hàng → dùng rowColor
@@ -403,13 +417,15 @@ class _CellsWidgetState extends State<CellsWidget> {
                           // Tính row và column từ index
                           final row = index ~/ _controller.cellsColumns;
                           final column = index % _controller.cellsColumns;
-                          
+
                           // Kiểm tra màu theo hàng trước
-                          if (widget.rowColors != null && widget.rowColors!.containsKey(row)) {
+                          if (widget.rowColors != null &&
+                              widget.rowColors!.containsKey(row)) {
                             backgroundColor = widget.rowColors![row]!;
                           }
                           // Sau đó kiểm tra màu theo cột
-                          else if (widget.columnColors != null && widget.columnColors!.containsKey(column)) {
+                          else if (widget.columnColors != null &&
+                              widget.columnColors!.containsKey(column)) {
                             backgroundColor = widget.columnColors![column]!;
                           }
                           // Cuối cùng dùng màu mặc định
@@ -698,7 +714,7 @@ class _CellsInputWidgetState extends State<CellsInputWidget> {
                         controller: _cellsController,
                         borderColor: Colors.blue,
                         borderWidth: 0.5,
-                        cellColor: Colors.grey.withOpacity(0.1),
+                        cellColor: Colors.grey.withValues(alpha: 0.1),
                       ),
                     ),
                   );
