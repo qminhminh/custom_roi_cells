@@ -2,6 +2,21 @@
 
 Flutter package for creating grid cells with customizable screen size and number of cells. Useful for creating ROI (Region of Interest) in camera applications.
 
+## 📋 Table of Contents
+
+- [Features](#features)
+- [Demo](#demo)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Usage](#usage)
+- [API Reference](#api-reference)
+- [Testing Guide](#testing-guide)
+- [Publishing to pub.dev](#publishing-to-pubdev)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
 ## Features
 
 ### Core Features
@@ -10,6 +25,8 @@ Flutter package for creating grid cells with customizable screen size and number
 - ✅ **Select cells by tap and drag** - Tap to select/deselect, drag to select multiple cells
 - ✅ **Highlight selected cells** - Selected cells will be highlighted in red
 - ✅ **Save selection as index array** - Example: [0,1,2,3,...]
+- ✅ **Custom row and column colors** - Set different colors for specific rows and columns
+- ✅ **Custom selected/unselected cell colors** - Different colors for selected and unselected cells
 - ✅ Widget with form input to enter parameters
 - ✅ Controller to manage state
 - ✅ Callback when cell is selected
@@ -29,9 +46,16 @@ Flutter package for creating grid cells with customizable screen size and number
 - ✅ **Header rows** - Display header row with custom styling
 - ✅ **Cell data management** - Manage cell data with `CellsDataController`
 
+---
+
 ## Demo
 
 ### Screenshots
+
+#### ROI Camera Application Example
+![ROI Camera Application](https://raw.githubusercontent.com/qminhminh/custom_roi_cells/main/images/roi.jpg)
+
+*Grid cells overlay on camera feed for defining warning zones (Cảnh báo vùng)*
 
 #### Main Interface
 ![Main Interface](docs/images/demo-main.png)
@@ -55,48 +79,12 @@ Flutter package for creating grid cells with customizable screen size and number
 
 ### Video Demo
 
-<!-- Add your demo video here -->
-<!-- Option 1: Using GitHub's video support -->
-<!--
-https://user-images.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/docs/images/demo-video.mp4
--->
-
-<!-- Option 2: Using YouTube or other video hosting -->
-<!--
-[![Demo Video](docs/images/demo-thumbnail.png)](https://youtube.com/watch?v=YOUR_VIDEO_ID)
--->
-
 <!-- Option 3: Using GIF for animated demo -->
 ![Drag Selection](docs/images/demo-drag-select.gif)
 
 *Drag to select multiple cells*
 
-### How to Add Your Own Demo
-
-1. **Take screenshots** of your app:
-   - Run the example app: `cd example && flutter run`
-   - Take screenshots of the main interface
-   - Take screenshots of selection functionality
-   - Take screenshots of control buttons
-   - Take screenshots of selection results
-
-2. **Create animated GIF** (optional):
-   - Record screen while using the app
-   - Convert to GIF using tools like [LICEcap](https://www.cockos.com/licecap/) or [GIF Brewery](https://gfycat.com/gifbrewery)
-   - Save as `docs/images/demo-drag-select.gif`
-
-3. **Create video** (optional):
-   - Record screen while demonstrating features
-   - Export as MP4
-   - Upload to YouTube or GitHub
-   - Add link to README
-
-4. **Add images to repository**:
-   - Create `docs/images/` directory
-   - Add your images to `docs/images/`
-   - Update paths in README.md
-
-**Note:** Currently, the demo images are placeholders. Replace them with your actual screenshots and videos.
+---
 
 ## Installation
 
@@ -112,6 +100,107 @@ Then run:
 ```bash
 flutter pub get
 ```
+
+---
+
+## Quick Start
+
+### 🚀 Running the Example App
+
+#### Method 1: Android Studio (Recommended) ⭐
+
+1. **Open Android Studio**
+2. **File → Open** → Select the `example` folder
+3. Wait for Android Studio to sync dependencies (1-2 minutes)
+4. Select device/emulator from dropdown at the top
+5. Press **Run** button (▶) or press **Shift + F10**
+6. App will build and run automatically
+
+#### Method 2: Terminal
+
+**Windows (PowerShell or CMD):**
+```powershell
+cd example
+flutter pub get
+flutter run
+```
+
+**Mac/Linux:**
+```bash
+cd example
+flutter pub get
+flutter run
+```
+
+#### Method 3: Web (If supported)
+
+```bash
+cd example
+flutter run -d chrome
+```
+
+### 📱 What You'll See
+
+The app displays a 15x15 grid with the following interface:
+
+```
+┌─────────────────────────────────────────┐
+│  Custom ROI Camera Cells                │
+├─────────────────────────────────────────┤
+│                                         │
+│  ┌───────────────────────────────────┐ │
+│  │ 📱 Custom ROI Camera Cells        │ │
+│  │ • Tap to select/deselect a cell   │ │
+│  │ • Drag to select multiple cells   │ │
+│  │ • Selected cells will display in  │ │
+│  │   red                             │ │
+│  └───────────────────────────────────┘ │
+│                                         │
+│  Grid Cells (15x15):                   │
+│  ┌─────────────────────────────────┐   │
+│  │ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ │   │
+│  │ ⬜ 🔴 🔴 🔴 ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ │   │
+│  │ ⬜ 🔴 🔴 🔴 ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ │   │
+│  │ ⬜ 🔴 🔴 🔴 ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ │   │
+│  │ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ ⬜ │   │
+│  │ ... (15x15 grid)                  │   │
+│  └─────────────────────────────────┘   │
+│                                         │
+│  [Save] [Delete] [Clear]               │
+│                                         │
+│  ✅ Selected 9 cells:                   │
+│  List: 16, 17, 18, 31, 32, ...         │
+│  Array: [16,17,18,31,32,33,46,47,48]   │
+│                                         │
+└─────────────────────────────────────────┘
+```
+
+### 🎨 Interface Details
+
+**Colors:**
+- Header: Light blue (#E3F2FD)
+- Grid background: White
+- Unselected cells: White
+- Selected cells: Red (70% opacity)
+- Cell borders: Light blue (#90CAF9)
+- Save button: Blue (#2196F3)
+- Delete button: Black (#424242)
+- Clear button: Gray (#9E9E9E)
+
+**Sizes:**
+- Grid: 600px x 400px
+- Cells: ~40px x ~27px (auto-calculated)
+- Border: 0.5px
+
+### ✨ How to Use
+
+1. **Tap on cell**: Select/deselect (red = selected)
+2. **Drag mouse/finger**: Select multiple cells at once
+3. **Save button**: Save selected index list
+4. **Delete button**: Delete selected cells
+5. **Clear button**: Clear all selection
+
+---
 
 ## Usage
 
@@ -155,7 +244,6 @@ class _MyWidgetState extends State<MyWidget> {
 }
 ```
 
-
 ### Method 2: Using directly with parameters
 
 ```dart
@@ -189,6 +277,7 @@ CellsWidget(
   controller: controller,
   enableSelection: true, // Enable selection feature
   selectedCellColor: Colors.red.withOpacity(0.6),
+  unselectedCellColor: Colors.white, // Color for unselected cells
   showCellNumbers: true, // Display cell indices
   onSelectionChanged: (indices) {
     selectedIndices = indices;
@@ -211,6 +300,43 @@ CellsSelectionButtons(
   },
 )
 ```
+
+### Method 3.1: Using with Custom Row and Column Colors
+
+```dart
+final CellsController controller = CellsController(
+  screenWidth: 800.0,
+  screenHeight: 400.0,
+  cellsRows: 20,
+  cellsColumns: 20,
+);
+
+CellsWidget(
+  controller: controller,
+  enableSelection: true,
+  // Color for selected cells
+  selectedCellColor: Colors.blue.withOpacity(0.5),
+  // Color for unselected cells
+  unselectedCellColor: Colors.white,
+  // Custom colors for specific rows
+  rowColors: {
+    0: Colors.yellow.withOpacity(0.3),  // Row 0: yellow
+    1: Colors.green.withOpacity(0.3),    // Row 1: green
+    5: Colors.orange.withOpacity(0.3),   // Row 5: orange
+  },
+  // Custom colors for specific columns
+  columnColors: {
+    0: Colors.red.withOpacity(0.3),     // Column 0: red
+    2: Colors.purple.withOpacity(0.3),  // Column 2: purple
+    10: Colors.cyan.withOpacity(0.3),    // Column 10: cyan
+  },
+  onSelectionChanged: (indices) {
+    print('Selected: $indices');
+  },
+)
+```
+
+**Note:** Color priority: Selected cells > Row colors > Column colors > Unselected cell color
 
 ### Method 4: Using Widget with Form Input
 
@@ -356,6 +482,8 @@ CellsExportImport.importFromCsv(dataController, controller, csvString);
 CellsExportImport.importFromJson(dataController, controller, jsonData);
 ```
 
+---
+
 ## API Reference
 
 ### CellsWidget
@@ -378,6 +506,9 @@ Main widget to display grid cells.
 - `numberFontSize` (double?): Number font size
 - `enableSelection` (bool): Enable cell selection by tap and drag (default: false)
 - `selectedCellColor` (Color?): Selected cell color (default: Colors.red.withOpacity(0.5))
+- `unselectedCellColor` (Color?): Unselected cell color (takes priority over cellColor when enableSelection = true)
+- `rowColors` (Map<int, Color>?): Map of row index to color for customizing row colors
+- `columnColors` (Map<int, Color>?): Map of column index to color for customizing column colors
 - `onSelectionChanged` (void Function(List<int> selectedIndices)?): Callback when selection changes, returns list of indices
 - `onSaveSelection` (void Function(List<int> selectedIndices)?): Callback when saving selection
 
@@ -562,9 +693,208 @@ Utility class for exporting and importing data.
 - `exportToJson(CellsDataController, CellsController)`: Export data to JSON
 - `importFromJson(CellsDataController, CellsController, Map<String, dynamic> json)`: Import data from JSON
 
-## Examples
+---
 
-See more detailed examples in the `example/` directory.
+## Testing Guide
+
+### 🧪 Test Cases
+
+#### Test 1: Select one cell
+```
+1. Tap on cell at position (0,0) - index 0
+2. Expected: Cell turns red
+3. Check: selectedIndices = [0]
+```
+
+#### Test 2: Select multiple individual cells
+```
+1. Tap on cell 0
+2. Tap on cell 5
+3. Tap on cell 10
+4. Expected: 3 red cells
+5. Check: selectedIndices = [0, 5, 10]
+```
+
+#### Test 3: Drag to select range
+```
+1. Press and hold cell 20
+2. Drag to cell 25
+3. Expected: Cells 20-25 all red
+4. Check: selectedIndices = [20, 21, 22, 23, 24, 25]
+```
+
+#### Test 4: Select rectangle
+```
+1. Press and hold cell 30 (row 2, column 0)
+2. Drag to cell 45 (row 3, column 0)
+3. Expected: Select both row 2 and row 3
+4. Check: selectedIndices contains cells from 30-44
+```
+
+#### Test 5: Save selection
+```
+1. Select some cells
+2. Press Save button
+3. Expected: Display SnackBar "✅ Saved X cells"
+4. Check: Index array displays correctly
+```
+
+#### Test 6: Delete selection
+```
+1. Select some cells
+2. Press Delete button
+3. Expected: Cells deselect, display SnackBar
+4. Check: selectedIndices = []
+```
+
+#### Test 7: Clear selection
+```
+1. Select multiple cells
+2. Press Clear button
+3. Expected: All cells deselect
+4. Check: selectedIndices = []
+```
+
+### ✅ Functionality Checklist
+
+#### Basic Interface
+- [ ] App opens
+- [ ] Header displays correctly
+- [ ] Grid cells display 15x15
+- [ ] Save, Delete, Clear buttons display
+
+#### Selection Functionality
+- [ ] Tap on cell → Cell turns red
+- [ ] Tap again → Cell deselects (returns to white)
+- [ ] Drag from one cell to another → Select range
+- [ ] Drag diagonally → Select rectangle
+
+#### Result Display
+- [ ] Select cells → Display count
+- [ ] Select cells → Display index list
+- [ ] Select cells → Display JSON array: `[0,1,2,3,...]`
+
+#### Control Buttons
+- [ ] Press Save → Save selection and display array
+- [ ] Press Delete → Delete selected cells
+- [ ] Press Clear → Clear all selection
+
+### ❓ Troubleshooting
+
+#### Error "Flutter not found"
+- Ensure Flutter SDK is installed
+- Add Flutter to PATH
+- Check installation: `flutter --version`
+
+#### Error "No devices found"
+- Start Android Emulator in Android Studio
+- Or connect phone and enable USB Debugging
+- Create emulator: **Tools → Device Manager → Create Device**
+
+#### Build error
+- Run `flutter clean`
+- Run `flutter pub get` again
+- Delete `.dart_tool` and `build` folders
+
+#### Cells can't be selected
+- Check `enableSelection: true` in code
+- Ensure controller is properly initialized
+
+---
+
+## Publishing to pub.dev
+
+### Step 1: Preparation
+
+1. Ensure Flutter SDK is installed
+2. Log in to pub.dev with Google account
+3. Check all required files:
+   - `pubspec.yaml` - updated description and version
+   - `README.md` - has complete documentation
+   - `CHANGELOG.md` - has changelog
+   - `LICENSE` - has license (MIT)
+   - `example/` - has example app
+
+### Step 2: Code Check
+
+Run the following commands to check:
+
+```bash
+# Format code
+flutter format .
+
+# Analyze code
+flutter analyze
+
+# Run tests
+flutter test
+
+# Run example app
+cd example
+flutter run
+```
+
+### Step 3: Update Information in pubspec.yaml
+
+Ensure the following information is correct:
+- `name`: Package name (must be unique on pub.dev)
+- `description`: Brief description (maximum 60 characters)
+- `version`: Current version
+- `homepage`: GitHub repository URL
+- `repository`: GitHub repository URL
+- `issue_tracker`: GitHub issues URL
+
+**Note:** Update GitHub URLs in `pubspec.yaml` with your actual repository.
+
+### Step 4: Create pub.dev Account
+
+1. Visit https://pub.dev
+2. Log in with Google account
+3. Go to "Publisher" section to create publisher (if not already created)
+
+### Step 5: Publish Package
+
+```bash
+# Check package before publishing
+flutter pub publish --dry-run
+
+# Publish package
+flutter pub publish
+```
+
+### Step 6: After Publishing
+
+1. Check package on pub.dev
+2. Update README if needed
+3. Create tags on GitHub:
+   ```bash
+   git tag v0.2.0
+   git push origin v0.2.0
+   ```
+
+### Important Notes
+
+- **Version**: Must increment version for each publish
+- **Changelog**: Always update CHANGELOG.md when there are changes
+- **Tests**: Ensure all tests pass
+- **Documentation**: Ensure README.md is complete and clear
+- **License**: Must have license file
+
+### Update Package After Publishing
+
+1. Update version in `pubspec.yaml`
+2. Update `CHANGELOG.md`
+3. Commit and push code
+4. Run `flutter pub publish`
+5. Create new tag on GitHub
+
+### Publishing Troubleshooting
+
+- **Error "Package already exists"**: Package name is already in use, need to change name
+- **Error "Invalid version"**: Version format is incorrect (must be x.y.z)
+- **Error "Missing files"**: Missing required files (README, LICENSE, etc.)
+
+---
 
 ## Contributing
 

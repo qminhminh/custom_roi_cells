@@ -45,6 +45,17 @@ class CellsWidget extends StatefulWidget {
   /// Màu của cells được chọn
   final Color? selectedCellColor;
 
+  /// Màu của cells chưa được chọn (ưu tiên hơn cellColor khi enableSelection = true)
+  final Color? unselectedCellColor;
+
+  /// Map màu theo hàng (row index -> Color)
+  /// Cho phép tùy chỉnh màu cho từng hàng
+  final Map<int, Color>? rowColors;
+
+  /// Map màu theo cột (column index -> Color)
+  /// Cho phép tùy chỉnh màu cho từng cột
+  final Map<int, Color>? columnColors;
+
   /// Callback khi selection thay đổi (trả về danh sách index)
   final void Function(List<int> selectedIndices)? onSelectionChanged;
 
@@ -67,6 +78,9 @@ class CellsWidget extends StatefulWidget {
     this.numberFontSize,
     this.enableSelection = false,
     this.selectedCellColor,
+    this.unselectedCellColor,
+    this.rowColors,
+    this.columnColors,
     this.onSelectionChanged,
     this.onSaveSelection,
   }) : assert(
@@ -298,7 +312,8 @@ class _CellsWidgetState extends State<CellsWidget> {
       final cellHeight = _controller.cellHeight;
       final borderColor = widget.borderColor ?? Colors.grey;
       final borderWidth = widget.borderWidth ?? 1.0;
-      final cellColor = widget.cellColor ?? Colors.transparent;
+      final defaultCellColor = widget.cellColor ?? Colors.transparent;
+      final unselectedColor = widget.unselectedCellColor ?? defaultCellColor;
       final selectedColor =
           widget.selectedCellColor ?? Colors.red.withOpacity(0.5);
       final numberColor = widget.numberColor ?? Colors.black;
@@ -375,8 +390,33 @@ class _CellsWidgetState extends State<CellsWidget> {
                         final isSelected =
                             widget.enableSelection &&
                             _controller.isCellSelected(index);
-                        final backgroundColor =
-                            isSelected ? selectedColor : cellColor;
+                        
+                        // Tính toán màu nền theo thứ tự ưu tiên:
+                        // 1. Nếu cell được chọn → dùng selectedCellColor
+                        // 2. Nếu có màu theo hàng → dùng rowColor
+                        // 3. Nếu có màu theo cột → dùng columnColor
+                        // 4. Nếu không → dùng unselectedCellColor hoặc cellColor
+                        Color backgroundColor;
+                        if (isSelected) {
+                          backgroundColor = selectedColor;
+                        } else {
+                          // Tính row và column từ index
+                          final row = index ~/ _controller.cellsColumns;
+                          final column = index % _controller.cellsColumns;
+                          
+                          // Kiểm tra màu theo hàng trước
+                          if (widget.rowColors != null && widget.rowColors!.containsKey(row)) {
+                            backgroundColor = widget.rowColors![row]!;
+                          }
+                          // Sau đó kiểm tra màu theo cột
+                          else if (widget.columnColors != null && widget.columnColors!.containsKey(column)) {
+                            backgroundColor = widget.columnColors![column]!;
+                          }
+                          // Cuối cùng dùng màu mặc định
+                          else {
+                            backgroundColor = unselectedColor;
+                          }
+                        }
 
                         return GestureDetector(
                           onTap: () => _onCellTap(index),
@@ -414,7 +454,7 @@ class _CellsWidgetState extends State<CellsWidget> {
                         // Fallback widget nếu có lỗi
                         return Container(
                           decoration: BoxDecoration(
-                            color: cellColor,
+                            color: unselectedColor,
                             border: Border.all(
                               color: borderColor,
                               width: borderWidth,

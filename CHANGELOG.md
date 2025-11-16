@@ -1,3 +1,18 @@
+## 0.3.5
+
+* **Custom Row and Column Colors (NEW!):**
+  * Added `rowColors` parameter to `CellsWidget` for customizing colors by row index
+  * Added `columnColors` parameter to `CellsWidget` for customizing colors by column index
+  * Added `unselectedCellColor` parameter for separate color control of unselected cells
+  * Color priority: Selected cells > Row colors > Column colors > Unselected cell color
+  * Support setting different colors for specific rows and columns independently
+  * Perfect for highlighting specific rows/columns in grid layouts
+* **Documentation Improvements:**
+  * Updated README.md with comprehensive documentation
+  * Added examples for custom row and column colors
+  * Improved API reference documentation
+  * Added testing guide and troubleshooting section
+
 ## 0.3.4
 
 * **Custom Column/Row Sizes (NEW!):**
