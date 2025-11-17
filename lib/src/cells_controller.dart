@@ -191,6 +191,21 @@ class CellsController {
     }
   }
 
+  /// Gán danh sách cells được chọn (thay thế toàn bộ selection hiện tại)
+  void setSelectedCells(List<int> indices) {
+    try {
+      _selectedCellIndices.clear();
+      for (final index in indices) {
+        if (index >= 0 && index < totalCells) {
+          _selectedCellIndices.add(index);
+        }
+      }
+      _notifyListeners();
+    } catch (e) {
+      // Ignore error để tránh crash
+    }
+  }
+
   /// Chọn một range cells từ startIndex đến endIndex
   void selectCellRange(int startIndex, int endIndex) {
     try {

@@ -1,3 +1,15 @@
+## 0.3.8
+
+* **Server Selection Support:**
+  * Added `CellsController.setSelectedCells(List<int>)` to replace the current selection with any list of indices (e.g., data from server/API)
+  * Added `initialSelectedCells` parameter to `CellsWidget` for pre-selecting cells on first render
+  * Example app now demonstrates loading two sample datasets from a simulated server and applying them to the grid
+* **UI Enhancements:**
+  * Added “Server Selection Demo” section with action buttons in the example app
+  * Grid preview now highlights server data by default using `initialSelectedCells`
+* **Documentation:**
+  * Updated README usage examples and API reference to cover the new selection APIs
+
 ## 0.3.7
 
 * **Bug Fixes:**

@@ -27,6 +27,7 @@ Flutter package for creating grid cells with customizable screen size and number
 - ✅ **Save selection as index array** - Example: [0,1,2,3,...]
 - ✅ **Custom row and column colors** - Set different colors for specific rows and columns
 - ✅ **Custom selected/unselected cell colors** - Different colors for selected and unselected cells
+- ✅ **Load server selections** - Apply any list of indices (e.g. from API) to highlight cells instantly
 - ✅ Widget with form input to enter parameters
 - ✅ Controller to manage state
 - ✅ Callback when cell is selected
@@ -338,6 +339,33 @@ CellsWidget(
 
 **Note:** Color priority: Selected cells > Row colors > Column colors > Unselected cell color
 
+### Method 3.2: Loading Server/Remote Selections
+
+```dart
+final CellsController controller = CellsController(
+  screenWidth: 800.0,
+  screenHeight: 400.0,
+  cellsRows: 20,
+  cellsColumns: 20,
+);
+
+final List<int> serverSelection = [0, 1, 2, 15, 16, 30, 45, 60];
+
+CellsWidget(
+  controller: controller,
+  enableSelection: true,
+  initialSelectedCells: serverSelection, // (optional) preselect on first render
+  selectedCellColor: Colors.red.withValues(alpha: 0.6),
+);
+
+// When server pushes a new selection list:
+void onServerSelectionReceived(List<int> indices) {
+  controller.setSelectedCells(indices); // highlights instantly
+  final currentSelection = controller.getSelectedIndices(); // read-only copy
+  print('Applied selection: $currentSelection');
+}
+```
+
 ### Method 4: Using Widget with Form Input
 
 ```dart
@@ -506,6 +534,7 @@ Main widget to display grid cells.
 - `numberFontSize` (double?): Number font size
 - `enableSelection` (bool): Enable cell selection by tap and drag (default: false)
 - `selectedCellColor` (Color?): Selected cell color (default: Colors.red.withOpacity(0.5))
+- `initialSelectedCells` (List<int>?): Optional list of indices to highlight on first render
 - `unselectedCellColor` (Color?): Unselected cell color (takes priority over cellColor when enableSelection = true)
 - `rowColors` (Map<int, Color>?): Map of row index to color for customizing row colors
 - `columnColors` (Map<int, Color>?): Map of column index to color for customizing column colors
@@ -646,6 +675,7 @@ CellsController({
 - `selectCell(int index)`: Select a cell by index
 - `deselectCell(int index)`: Deselect a cell by index
 - `selectCells(List<int> indices)`: Select multiple cells by index list
+- `setSelectedCells(List<int> indices)`: Replace the current selection with the provided list (useful for server/API data)
 - `selectCellRange(int startIndex, int endIndex)`: Select a range of cells
 - `selectRow(int row)`: Select an entire row
 - `selectColumn(int column)`: Select an entire column

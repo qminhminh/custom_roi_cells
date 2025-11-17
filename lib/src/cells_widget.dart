@@ -75,6 +75,9 @@ class CellsWidget extends StatefulWidget {
   /// Callback khi save selection (trả về danh sách index)
   final void Function(List<int> selectedIndices)? onSaveSelection;
 
+  /// Danh sách cells được chọn ban đầu (ví dụ dữ liệu từ server)
+  final List<int>? initialSelectedCells;
+
   const CellsWidget({
     super.key,
     this.controller,
@@ -97,6 +100,7 @@ class CellsWidget extends StatefulWidget {
     this.columnColors,
     this.onSelectionChanged,
     this.onSaveSelection,
+    this.initialSelectedCells,
   }) : assert(
          controller != null ||
              (screenWidth != null &&
@@ -122,6 +126,7 @@ class _CellsWidgetState extends State<CellsWidget> {
   final Map<int, GlobalKey> _cellKeys =
       {}; // Map index -> GlobalKey cho mỗi cell
   Offset? _pointerDownPosition;
+  bool _initialSelectionApplied = false;
 
   @override
   void initState() {
@@ -150,6 +155,7 @@ class _CellsWidgetState extends State<CellsWidget> {
       );
       _isInternalController = true;
     }
+    _applyInitialSelection();
   }
 
   @override
@@ -202,6 +208,32 @@ class _CellsWidgetState extends State<CellsWidget> {
       }
     } catch (e) {
       // Ignore error để tránh crash
+    }
+  }
+
+  void _applyInitialSelection() {
+    try {
+      if (!_initialSelectionApplied &&
+          widget.initialSelectedCells != null &&
+          widget.initialSelectedCells!.isNotEmpty) {
+        _controller.setSelectedCells(widget.initialSelectedCells!);
+        _initialSelectionApplied = true;
+      }
+    } catch (e) {
+      // Ignore error
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant CellsWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    try {
+      if (widget.initialSelectedCells != oldWidget.initialSelectedCells) {
+        _initialSelectionApplied = false;
+        _applyInitialSelection();
+      }
+    } catch (e) {
+      // Ignore error
     }
   }
 

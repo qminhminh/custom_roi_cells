@@ -84,6 +84,8 @@ class _ROISelectionPageState extends State<ROISelectionPage> {
 
   List<int> selectedIndices = [];
   DragSelectionMode dragMode = DragSelectionMode.multipleCells;
+  final List<int> sampleServerSelectionA = [0, 1, 2, 15, 16, 17, 45, 60];
+  final List<int> sampleServerSelectionB = [10, 11, 12, 30, 31, 32, 70, 71];
 
   // Màu sắc tùy chỉnh
   Color selectedCellColor = Colors.red.withValues(alpha: 0.7);
@@ -133,6 +135,20 @@ class _ROISelectionPageState extends State<ROISelectionPage> {
     super.dispose();
   }
 
+  void _applyServerSelection(List<int> data) {
+    controller.setSelectedCells(data);
+    setState(() {
+      selectedIndices = controller.getSelectedIndices();
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Applied server selection: [${data.take(10).join(",")}${data.length > 10 ? ", ..." : ""}]',
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -178,6 +194,57 @@ class _ROISelectionPageState extends State<ROISelectionPage> {
                       },
                     ),
                   ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.cyan.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.cyan),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '☁️ Server Selection Demo',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Dataset A: ${sampleServerSelectionA.toString()}',
+                  style: const TextStyle(fontSize: 13),
+                ),
+                Text(
+                  'Dataset B: ${sampleServerSelectionB.toString()}',
+                  style: const TextStyle(fontSize: 13),
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed:
+                          () => _applyServerSelection(sampleServerSelectionA),
+                      icon: const Icon(Icons.cloud_download),
+                      label: const Text('Apply Dataset A'),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed:
+                          () => _applyServerSelection(sampleServerSelectionB),
+                      icon: const Icon(Icons.cloud_download_outlined),
+                      label: const Text('Apply Dataset B'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Tip: Use controller.setSelectedCells(serverData) to highlight cells from server.',
+                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
                 ),
               ],
             ),
@@ -405,6 +472,7 @@ class _ROISelectionPageState extends State<ROISelectionPage> {
                 borderWidth: 0.5,
                 cellColor: Colors.white,
                 selectedCellColor: selectedCellColor,
+                initialSelectedCells: sampleServerSelectionA,
                 rowColors:
                     enableRowColor && rowColor != null
                         ? _generateRowColors(rowColor!)
